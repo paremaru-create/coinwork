@@ -8,22 +8,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=DotGothic16&display=swap');
 
 :root {
-  --bg:        #f0f9ff;
-  --bg2:       #e0f2fe;
-  --panel:     #ffffff;
-  --border:    #bae6fd;
-  --teal:      #0d9488;
-  --emerald:   #059669;
-  --sky:       #0284c7;
-  --violet:    #7c3aed;
-  --lime:      #65a30d;
-  --coin:      #d97706;
-  --work:      #0284c7;
-  --priv:      #7c3aed;
-  --text:      #1e293b;
-  --text-dim:  #64748b;
-  --radius:    14px;
-  --shadow:    0 2px 12px #0000000d;
+  --bg:       #0d1117;
+  --bg2:      #111827;
+  --panel:    #1a2332;
+  --border:   #1e3a4a;
+  --teal:     #2dd4bf;
+  --emerald:  #34d399;
+  --sky:      #38bdf8;
+  --violet:   #a78bfa;
+  --lime:     #a3e635;
+  --coin:     #fbbf24;
+  --text:     #e2e8f0;
+  --text-dim: #64748b;
+  --radius:   14px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,18 +33,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 10px 40px;
-  gap: 12px;
+  padding: 16px 12px 40px;
+  gap: 14px;
 }
 
 /* ── ヘッダー ── */
 header {
   width: 100%;
-  max-width: 900px;
+  max-width: 420px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: 10px 0 4px;
 }
 
 .logo {
@@ -59,95 +56,73 @@ header {
   letter-spacing: 0.12em;
 }
 
-/* ── コイン概要バー ── */
-.coin-overview {
-  width: 100%;
-  max-width: 900px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  align-items: center;
-}
-
-.coin-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 110px;
-}
-
-.coin-stat-label {
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-}
-
-.coin-stat-val {
-  font-family: 'DotGothic16', monospace;
-  font-size: 1.15rem;
-  color: var(--coin);
-}
-
-.coin-stat-val.spent { color: #dc2626; }
-.coin-stat-val.budget { color: var(--emerald); }
-
-.divider-v {
-  width: 1px;
-  height: 36px;
-  background: var(--border);
-}
-
-.limit-row {
+/* ── コインバッジ ── */
+.coin-badge {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-}
-
-.limit-input {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: 'DotGothic16', monospace;
-  font-size: 0.85rem;
-  padding: 3px 8px;
-  width: 80px;
-  outline: none;
-  text-align: center;
-}
-.limit-input:focus { border-color: var(--sky); }
-
-.spend-btn {
-  margin-left: auto;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--coin);
+  background: #1f2d1a;
+  border: 1.5px solid #3d5c1a;
   border-radius: 99px;
-  color: var(--coin);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  padding: 6px 14px 6px 10px;
+  position: relative;
+  overflow: visible;
 }
-.spend-btn:hover { opacity: 0.8; }
 
-/* 予算バー */
-.budget-bar-wrap {
+.coin-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 6px #fbbf2488);
+}
+
+.coin-count {
+  font-family: 'DotGothic16', monospace;
+  font-size: 1.1rem;
+  color: var(--coin);
+  min-width: 36px;
+  text-align: right;
+  transition: transform 0.15s;
+}
+
+.coin-count.bump { transform: scale(1.3); }
+
+/* ── 報酬予算バー ── */
+.budget-card {
   width: 100%;
-  height: 6px;
-  background: #e2e8f0;
+  max-width: 420px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.budget-label {
+  font-size: 0.72rem;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.budget-val {
+  font-family: 'DotGothic16', monospace;
+  font-size: 1rem;
+  color: var(--emerald);
+}
+
+.budget-bar-wrap {
+  height: 8px;
+  background: #ffffff0f;
   border-radius: 99px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-bottom: 6px;
 }
+
 .budget-bar {
   height: 100%;
   background: linear-gradient(90deg, var(--teal), var(--emerald));
@@ -155,31 +130,77 @@ header {
   transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-/* ── メインレイアウト（左右） ── */
-.main-columns {
-  width: 100%;
-  max-width: 900px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.budget-sub {
+  font-size: 0.67rem;
+  color: var(--text-dim);
 }
 
-@media (max-width: 600px) {
-  .main-columns { grid-template-columns: 1fr; }
+.budget-rate-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.budget-rate-label { font-size: 0.7rem; color: var(--text-dim); }
+
+.rate-input {
+  background: #ffffff0a;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  width: 72px;
+  outline: none;
+  text-align: center;
+}
+.rate-input:focus { border-color: var(--teal); }
+
+/* ── タブ ── */
+.tabs {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  gap: 6px;
+}
+
+.tab {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.8rem;
+  padding: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #0f2a2a, #1a1040);
+  border-color: var(--teal);
+  color: var(--teal);
+  font-weight: 700;
 }
 
 /* ── タスクパネル ── */
 .task-panel {
+  width: 100%;
+  max-width: 420px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   padding: 14px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 10px;
-  min-height: 300px;
 }
+.task-panel.visible { display: flex; }
 
 .panel-header {
   display: flex;
@@ -188,10 +209,10 @@ header {
 }
 
 .panel-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
   color: var(--sky);
+  letter-spacing: 0.1em;
+  font-weight: 700;
 }
 
 .panel-progress {
@@ -204,64 +225,61 @@ header {
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  flex: 1;
-}
-
-.empty-msg {
-  font-size: 0.73rem;
-  color: var(--text-dim);
-  text-align: center;
-  padding: 20px 0;
+  gap: 6px;
+  min-height: 20px;
 }
 
 .task-item {
   display: flex;
   align-items: center;
-  gap: 7px;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  gap: 8px;
+  background: #ffffff06;
+  border: 1px solid #ffffff0e;
   border-radius: 9px;
-  padding: 8px 9px;
+  padding: 9px 10px;
   transition: all 0.2s;
   animation: slideIn 0.2s ease;
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-5px); }
+  from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.task-item.done {
+  background: #0d2a1a;
+  border-color: #1a4a2a;
 }
 
 .task-check {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid #cbd5e1;
+  border: 2px solid var(--border);
   background: none;
   cursor: pointer;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
   transition: all 0.2s;
+  font-size: 0.8rem;
 }
-.task-check:hover { border-color: var(--emerald); background: #f0fdf4; }
-
-.task-label {
-  font-size: 0.6rem;
-  padding: 1px 6px;
-  border-radius: 99px;
-  font-weight: 700;
-  flex-shrink: 0;
+.task-check:hover { border-color: var(--emerald); }
+.task-item.done .task-check {
+  background: var(--emerald);
+  border-color: var(--emerald);
 }
-.task-label.work { background: #dbeafe; color: var(--work); }
-.task-label.priv { background: #ede9fe; color: var(--priv); }
 
 .task-text {
   flex: 1;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.4;
+  transition: all 0.2s;
+}
+.task-item.done .task-text {
+  color: var(--text-dim);
+  text-decoration: line-through;
 }
 
 .task-coin-badge {
@@ -274,58 +292,45 @@ header {
 .task-del {
   background: none;
   border: none;
-  color: #cbd5e1;
+  color: #ffffff20;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   padding: 0 2px;
   transition: color 0.2s;
   flex-shrink: 0;
 }
-.task-del:hover { color: #ef4444; }
+.task-del:hover { color: #ff6b6b; }
 
-/* 追加フォーム */
-.add-form {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
-}
-
+/* タスク追加フォーム */
 .add-row {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
 .task-input {
   flex: 1;
-  background: var(--bg2);
+  background: #ffffff08;
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.78rem;
-  padding: 7px 9px;
+  font-size: 0.8rem;
+  padding: 8px 10px;
   outline: none;
 }
 .task-input::placeholder { color: var(--text-dim); }
 .task-input:focus { border-color: var(--sky); }
 
-.add-options {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-}
-
-.label-select, .coin-select {
-  background: var(--bg2);
+.coin-select {
+  background: #ffffff08;
   border: 1px solid var(--border);
-  border-radius: 7px;
-  color: var(--text);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.75rem;
-  padding: 5px 6px;
+  border-radius: 8px;
+  color: var(--coin);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.8rem;
+  padding: 8px 6px;
   outline: none;
+  width: 60px;
   cursor: pointer;
 }
 
@@ -333,192 +338,101 @@ header {
   background: linear-gradient(135deg, var(--teal), var(--sky));
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: #0d1117;
   font-weight: 700;
   font-size: 1rem;
-  padding: 5px 13px;
+  padding: 8px 14px;
   cursor: pointer;
   transition: opacity 0.2s;
-  flex-shrink: 0;
 }
 .add-btn:hover { opacity: 0.85; }
 
-.reset-btn {
+/* 今日の予定リセット */
+.reset-day-btn {
+  width: 100%;
   background: none;
-  border: 1px dashed #cbd5e1;
-  border-radius: 7px;
+  border: 1px dashed #ffffff15;
+  border-radius: 8px;
   color: var(--text-dim);
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.68rem;
-  padding: 5px;
+  font-size: 0.72rem;
+  padding: 7px;
   cursor: pointer;
   transition: all 0.2s;
-  width: 100%;
 }
-.reset-btn:hover { border-color: var(--sky); color: var(--sky); }
+.reset-day-btn:hover { border-color: var(--sky); color: var(--sky); }
 
-/* ── 獲得履歴 ── */
-.history-panel {
+/* ── コイン飛翔アニメ ── */
+.flying-coin {
+  position: fixed;
+  font-size: 1.4rem;
+  pointer-events: none;
+  z-index: 999;
+  animation: flyToBadge 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+
+@keyframes flyToBadge {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  60%  { opacity: 1; transform: scale(1.3) translateY(-30px); }
+  100% { opacity: 0; transform: scale(0.4) translateY(-80px); }
+}
+
+/* ── コイン履歴 ── */
+.history-section {
   width: 100%;
-  max-width: 900px;
+  max-width: 420px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   padding: 14px;
 }
 
 .history-title {
   font-size: 0.72rem;
   color: var(--violet);
+  letter-spacing: 0.1em;
   font-weight: 700;
-  letter-spacing: 0.08em;
   margin-bottom: 10px;
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 200px;
+  gap: 5px;
+  max-height: 180px;
   overflow-y: auto;
 }
 
 .history-item {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 8px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  animation: slideIn 0.2s ease;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 4px 0;
+  border-bottom: 1px solid #ffffff06;
 }
 
-.history-check {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--emerald);
-  border: none;
+.history-item .h-coin { color: var(--coin); font-family: 'DotGothic16', monospace; }
+
+/* ── ボタン共通 ── */
+.btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.78rem;
+  padding: 7px 14px;
   cursor: pointer;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  color: #fff;
   transition: all 0.2s;
 }
-.history-check:hover { background: #ef4444; }
-.history-check:hover::after { content: '↩'; }
-.history-check:not(:hover)::after { content: '✓'; }
+.btn:hover { border-color: var(--teal); color: var(--teal); }
 
-.h-label {
-  font-size: 0.6rem;
-  padding: 1px 6px;
-  border-radius: 99px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.h-label.work { background: #dbeafe; color: var(--work); }
-.h-label.priv { background: #ede9fe; color: var(--priv); }
-
-.h-text { flex: 1; font-size: 0.78rem; color: var(--text); }
-.h-coin { font-family: 'DotGothic16', monospace; font-size: 0.72rem; color: var(--coin); flex-shrink: 0; }
-.h-ts   { font-size: 0.65rem; color: var(--text-dim); flex-shrink: 0; }
-
-/* ── コイン飛翔 ── */
-.flying-coin {
-  position: fixed;
-  font-size: 1.4rem;
-  pointer-events: none;
-  z-index: 999;
-  animation: flyUp 0.75s ease forwards;
-}
-@keyframes flyUp {
-  0%   { opacity: 1; transform: scale(1) translateY(0); }
-  60%  { opacity: 1; transform: scale(1.4) translateY(-40px); }
-  100% { opacity: 0; transform: scale(0.3) translateY(-100px); }
-}
-
-/* ── コイン消費モーダル ── */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #00000044;
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: var(--panel);
-  border-radius: var(--radius);
-  padding: 22px;
-  width: 300px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 32px #00000022;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.modal h2 { font-size: 0.9rem; color: var(--coin); }
-.modal p  { font-size: 0.75rem; color: var(--text-dim); }
-
-.modal-input {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: 'DotGothic16', monospace;
-  font-size: 1rem;
-  padding: 8px 12px;
-  width: 100%;
-  outline: none;
-  text-align: center;
-}
-.modal-input:focus { border-color: var(--coin); }
-
-.modal-memo {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.8rem;
-  padding: 7px 10px;
-  width: 100%;
-  outline: none;
-}
-
-.modal-btns { display: flex; gap: 8px; }
-
-.modal-ok {
-  flex: 1;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--coin);
-  border-radius: 8px;
-  color: var(--coin);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  padding: 8px;
-  cursor: pointer;
-}
-.modal-cancel {
-  flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+.empty-msg {
+  font-size: 0.75rem;
   color: var(--text-dim);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.85rem;
-  padding: 8px;
-  cursor: pointer;
+  text-align: center;
+  padding: 12px 0;
 }
 </style>
 </head>
@@ -526,121 +440,81 @@ header {
 
 <header>
   <div class="logo">🪙 コインワーク</div>
+  <div class="coin-badge">
+    <span class="coin-icon">🪙</span>
+    <span class="coin-count" id="coinCount">0</span>
+  </div>
 </header>
 
-<!-- コイン概要 -->
-<div class="coin-overview">
-  <div class="coin-stat">
-    <span class="coin-stat-label">💰 累計コイン</span>
-    <span class="coin-stat-val" id="totalCoins">0枚</span>
+<!-- 報酬予算バー -->
+<div class="budget-card">
+  <div class="budget-header">
+    <span class="budget-label">💰 今月の報酬予算</span>
+    <span class="budget-val" id="budgetVal">¥0</span>
   </div>
-  <div class="divider-v"></div>
-  <div class="coin-stat">
-    <span class="coin-stat-label">🛍️ 今月の使用上限</span>
-    <div class="limit-row">
-      <input class="limit-input" type="number" id="limitInput" value="30000" min="0">
-      <span>円</span>
-    </div>
+  <div class="budget-bar-wrap">
+    <div class="budget-bar" id="budgetBar" style="width:0%"></div>
   </div>
-  <div class="divider-v"></div>
-  <div class="coin-stat">
-    <span class="coin-stat-label">📤 今月の使用済み</span>
-    <span class="coin-stat-val spent" id="spentVal">¥0</span>
-  </div>
-  <div class="divider-v"></div>
-  <div class="coin-stat">
-    <span class="coin-stat-label">✨ 残り使用可能</span>
-    <span class="coin-stat-val budget" id="remainVal">¥0</span>
-  </div>
-  <button class="spend-btn" id="spendBtn">🪙 コインを使う</button>
-  <div style="width:100%">
-    <div class="budget-bar-wrap">
-      <div class="budget-bar" id="budgetBar" style="width:0%"></div>
-    </div>
+  <div class="budget-sub" id="budgetSub">コインを貯めて報酬予算を獲得しよう</div>
+  <div class="budget-rate-row">
+    <span class="budget-rate-label">🪙1枚 =</span>
+    <input class="rate-input" type="number" id="rateInput" value="10" min="1"> 円
+    <button class="btn" id="resetBudgetBtn" style="margin-left:auto;font-size:0.68rem;padding:5px 10px;">月リセット</button>
   </div>
 </div>
 
-<!-- 左右カラム -->
-<div class="main-columns">
-
-  <!-- 週タスク -->
-  <div class="task-panel">
-    <div class="panel-header">
-      <span class="panel-title">📋 週タスク</span>
-      <span class="panel-progress" id="weekProgress">0/0</span>
-    </div>
-    <div class="task-list" id="weekList"></div>
-    <div class="add-form">
-      <div class="add-row">
-        <input class="task-input" id="weekInput" placeholder="タスクを追加…" type="text">
-        <button class="add-btn" id="weekAdd">＋</button>
-      </div>
-      <div class="add-options">
-        <select class="label-select" id="weekLabel">
-          <option value="work">💼 仕事</option>
-          <option value="priv">🌿 プライベート</option>
-        </select>
-        <select class="coin-select" id="weekCoin">
-          <option value="1">🪙1</option>
-          <option value="2">🪙2</option>
-          <option value="3" selected>🪙3</option>
-          <option value="5">🪙5</option>
-          <option value="10">🪙10</option>
-        </select>
-      </div>
-      <button class="reset-btn" id="weekReset">週をリセット</button>
-    </div>
-  </div>
-
-  <!-- 今日の予定 -->
-  <div class="task-panel">
-    <div class="panel-header">
-      <span class="panel-title">⚡ 今日の予定</span>
-      <span class="panel-progress" id="dayProgress">0/0</span>
-    </div>
-    <div class="task-list" id="dayList"></div>
-    <div class="add-form">
-      <div class="add-row">
-        <input class="task-input" id="dayInput" placeholder="今日やること…" type="text">
-        <button class="add-btn" id="dayAdd">＋</button>
-      </div>
-      <div class="add-options">
-        <select class="label-select" id="dayLabel">
-          <option value="work">💼 仕事</option>
-          <option value="priv">🌿 プライベート</option>
-        </select>
-        <select class="coin-select" id="dayCoin">
-          <option value="1" selected>🪙1</option>
-          <option value="2">🪙2</option>
-          <option value="3">🪙3</option>
-          <option value="5">🪙5</option>
-        </select>
-      </div>
-      <button class="reset-btn" id="dayReset">今日の予定をリセット</button>
-    </div>
-  </div>
-
+<!-- タブ -->
+<div class="tabs">
+  <button class="tab active" data-tab="week">📋 週タスク</button>
+  <button class="tab" data-tab="day">⚡ 今日の予定</button>
 </div>
 
-<!-- 獲得履歴 -->
-<div class="history-panel">
-  <div class="history-title">📜 獲得履歴（チェックを外すと取り消し）</div>
+<!-- 週タスクパネル -->
+<div class="task-panel visible" id="panel-week">
+  <div class="panel-header">
+    <span class="panel-title">今週やること</span>
+    <span class="panel-progress" id="weekProgress">0/0</span>
+  </div>
+  <div class="task-list" id="weekList"></div>
+  <div class="add-row">
+    <input class="task-input" id="weekInput" placeholder="タスクを追加…" type="text">
+    <select class="coin-select" id="weekCoin">
+      <option value="1">🪙1</option>
+      <option value="2">🪙2</option>
+      <option value="3" selected>🪙3</option>
+      <option value="5">🪙5</option>
+      <option value="10">🪙10</option>
+    </select>
+    <button class="add-btn" id="weekAdd">＋</button>
+  </div>
+  <button class="reset-day-btn" id="weekReset">週をリセット（新しい週を始める）</button>
+</div>
+
+<!-- 今日の予定パネル -->
+<div class="task-panel" id="panel-day">
+  <div class="panel-header">
+    <span class="panel-title">今日の予定</span>
+    <span class="panel-progress" id="dayProgress">0/0</span>
+  </div>
+  <div class="task-list" id="dayList"></div>
+  <div class="add-row">
+    <input class="task-input" id="dayInput" placeholder="今日やること…" type="text">
+    <select class="coin-select" id="dayCoin">
+      <option value="1" selected>🪙1</option>
+      <option value="2">🪙2</option>
+      <option value="3">🪙3</option>
+      <option value="5">🪙5</option>
+    </select>
+    <button class="add-btn" id="dayAdd">＋</button>
+  </div>
+  <button class="reset-day-btn" id="dayReset">今日の予定をリセット（翌日の準備）</button>
+</div>
+
+<!-- コイン履歴 -->
+<div class="history-section">
+  <div class="history-title">📜 獲得履歴</div>
   <div class="history-list" id="historyList">
     <div class="empty-msg">まだ記録がありません</div>
-  </div>
-</div>
-
-<!-- コイン消費モーダル -->
-<div class="modal-overlay" id="spendModal">
-  <div class="modal">
-    <h2>🪙 コインを使う</h2>
-    <p>何に使いましたか？金額を入力してください。</p>
-    <input class="modal-input" type="number" id="spendAmount" placeholder="金額（円）" min="1">
-    <input class="modal-memo" type="text" id="spendMemo" placeholder="メモ（例：本、おやつ）">
-    <div class="modal-btns">
-      <button class="modal-ok" id="spendOk">使う</button>
-      <button class="modal-cancel" id="spendCancel">キャンセル</button>
-    </div>
   </div>
 </div>
 
@@ -650,110 +524,98 @@ function load(key, def) {
   try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
 }
 function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 }
 
 // ── 状態 ────────────────────────────────────────────────────
-let totalCoins = load('cw_totalCoins', 0);
-let spentYen   = load('cw_spentYen', 0);
-let limitYen   = load('cw_limitYen', 30000);
-let ratePerCoin= load('cw_rate', 150);
-let weekTasks  = load('cw_weekTasks', []);
-let dayTasks   = load('cw_dayTasks', []);
-let history    = load('cw_history', []);
+let coins    = load('coins', 0);
+let budget   = load('budget', 0);
+let rate     = load('rate', 10);
+let weekTasks = load('weekTasks', []);
+let dayTasks  = load('dayTasks', []);
+let history  = load('history', []);
 
 // ── 音 ──────────────────────────────────────────────────────
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function playCoin(n = 1) {
-  audioCtx.resume();
-  for (let i = 0; i < Math.min(n, 6); i++) {
-    setTimeout(() => {
-      const t = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, t);
-      osc.frequency.exponentialRampToValueAtTime(1320, t + 0.08);
-      osc.frequency.exponentialRampToValueAtTime(1100, t + 0.18);
-      gain.gain.setValueAtTime(0.28, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
-      osc.start(t); osc.stop(t + 0.32);
-    }, i * 90);
-  }
-}
-
-function playUndo() {
+function playCoin() {
   audioCtx.resume();
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
   osc.type = 'sine';
-  osc.frequency.setValueAtTime(600, t);
-  osc.frequency.exponentialRampToValueAtTime(300, t + 0.2);
-  gain.gain.setValueAtTime(0.2, t);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-  osc.start(t); osc.stop(t + 0.25);
+  osc.frequency.setValueAtTime(880, t);
+  osc.frequency.exponentialRampToValueAtTime(1320, t + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(1100, t + 0.18);
+  gain.gain.setValueAtTime(0.3, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+  osc.start(t);
+  osc.stop(t + 0.35);
 }
 
-// ── コイン飛翔 ──────────────────────────────────────────────
-function spawnCoins(el, n) {
-  const rect = el.getBoundingClientRect();
+function playBigCoin(n) {
+  audioCtx.resume();
   for (let i = 0; i < Math.min(n, 5); i++) {
-    setTimeout(() => {
-      const coin = document.createElement('div');
-      coin.className = 'flying-coin';
-      coin.textContent = '🪙';
-      coin.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*30) + 'px';
-      coin.style.top  = rect.top + 'px';
-      document.body.appendChild(coin);
-      setTimeout(() => coin.remove(), 800);
-    }, i * 80);
+    setTimeout(() => playCoin(), i * 80);
   }
 }
 
-// ── UI更新 ──────────────────────────────────────────────────
-function updateOverview() {
-  const totalYen = totalCoins * ratePerCoin;
-  const remain = Math.max(0, limitYen - spentYen);
-  const pct = limitYen > 0 ? Math.min(spentYen / limitYen * 100, 100) : 0;
+// ── コイン飛翔 ──────────────────────────────────────────────
+function spawnCoin(el) {
+  const rect = el.getBoundingClientRect();
+  const badge = document.getElementById('coinCount').getBoundingClientRect();
+  const coin = document.createElement('div');
+  coin.className = 'flying-coin';
+  coin.textContent = '🪙';
+  coin.style.left = rect.left + rect.width / 2 + 'px';
+  coin.style.top  = rect.top + 'px';
+  document.body.appendChild(coin);
+  setTimeout(() => coin.remove(), 800);
 
-  document.getElementById('totalCoins').textContent = totalCoins + '枚';
-  document.getElementById('spentVal').textContent = '¥' + spentYen.toLocaleString();
-  document.getElementById('remainVal').textContent = '¥' + remain.toLocaleString();
+  // バッジ揺れ
+  const cc = document.getElementById('coinCount');
+  cc.classList.add('bump');
+  setTimeout(() => cc.classList.remove('bump'), 200);
+}
+
+// ── UI更新 ──────────────────────────────────────────────────
+function updateCoinDisplay() {
+  document.getElementById('coinCount').textContent = coins;
+}
+
+function updateBudget() {
+  budget = coins * rate;
+  const maxBudget = 30000;
+  const pct = Math.min(budget / maxBudget * 100, 100);
   document.getElementById('budgetBar').style.width = pct + '%';
+  document.getElementById('budgetVal').textContent = '¥' + budget.toLocaleString();
+  document.getElementById('budgetSub').textContent =
+    budget === 0 ? 'コインを貯めて報酬予算を獲得しよう'
+                 : `🎁 今月 ¥${budget.toLocaleString()} 分好きなものに使っていい！`;
+  save('budget', budget);
 }
 
 function renderTasks(tasks, listId, progressId) {
   const list = document.getElementById(listId);
   const prog = document.getElementById(progressId);
-  const active = tasks.filter(t => !t.done);
-  const done   = tasks.filter(t => t.done).length;
-  const total  = tasks.length;
-
-  prog.textContent = `${done}/${total}`;
   list.innerHTML = '';
-
-  if (active.length === 0) {
-    list.innerHTML = '<div class="empty-msg">タスクなし</div>';
+  if (tasks.length === 0) {
+    list.innerHTML = '<div class="empty-msg">タスクを追加してください</div>';
+    prog.textContent = '0/0';
     return;
   }
-
-  active.forEach((task) => {
-    const idx = tasks.indexOf(task);
+  const done = tasks.filter(t => t.done).length;
+  prog.textContent = `${done}/${tasks.length}`;
+  tasks.forEach((task, i) => {
     const item = document.createElement('div');
-    item.className = 'task-item';
+    item.className = 'task-item' + (task.done ? ' done' : '');
 
     const check = document.createElement('button');
     check.className = 'task-check';
-    check.title = 'チェックで完了→履歴へ移動';
-    check.addEventListener('click', () => completeTask(tasks, idx, listId, progressId, check));
-
-    const lbl = document.createElement('span');
-    lbl.className = 'task-label ' + (task.label || 'work');
-    lbl.textContent = task.label === 'priv' ? 'プライベート' : '仕事';
+    check.textContent = task.done ? '✓' : '';
+    check.addEventListener('click', () => toggleTask(tasks, i, listId, progressId, check));
 
     const text = document.createElement('span');
     text.className = 'task-text';
@@ -767,13 +629,12 @@ function renderTasks(tasks, listId, progressId) {
     del.className = 'task-del';
     del.textContent = '✕';
     del.addEventListener('click', () => {
-      tasks.splice(idx, 1);
-      saveTaskList(tasks, listId);
+      tasks.splice(i, 1);
+      saveTasks(tasks, listId);
       renderTasks(tasks, listId, progressId);
     });
 
     item.appendChild(check);
-    item.appendChild(lbl);
     item.appendChild(text);
     item.appendChild(coinBadge);
     item.appendChild(del);
@@ -781,65 +642,37 @@ function renderTasks(tasks, listId, progressId) {
   });
 }
 
-function completeTask(tasks, idx, listId, progressId, checkEl) {
-  const task = tasks[idx];
-  task.done = true;
-  saveTaskList(tasks, listId);
+function saveTasks(tasks, listId) {
+  if (listId === 'weekList') save('weekTasks', tasks);
+  else save('dayTasks', tasks);
+}
 
-  // コイン加算
-  totalCoins += task.coin;
-  save('cw_totalCoins', totalCoins);
-  updateOverview();
+function toggleTask(tasks, i, listId, progressId, checkEl) {
+  const task = tasks[i];
+  if (task.done) return; // 完了済みは戻せない
+
+  task.done = true;
+  saveTasks(tasks, listId);
+
+  // コイン追加
+  coins += task.coin;
+  save('coins', coins);
+  updateCoinDisplay();
+  updateBudget();
 
   // 音＆アニメ
-  playCoin(task.coin);
-  spawnCoins(checkEl, task.coin);
+  playBigCoin(task.coin);
+  spawnCoin(checkEl);
 
   // 履歴追加
   const now = new Date();
   const ts = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  const historyEntry = {
-    id: Date.now(),
-    text: task.text,
-    coin: task.coin,
-    label: task.label || 'work',
-    ts,
-    sourceList: listId,
-    sourceIdx: idx,
-    originalTask: { ...task }
-  };
-  history.unshift(historyEntry);
-  save('cw_history', history);
+  history.unshift({ text: task.text, coin: task.coin, ts });
+  if (history.length > 50) history.pop();
+  save('history', history);
+  renderHistory();
 
   renderTasks(tasks, listId, progressId);
-  renderHistory();
-}
-
-function undoHistory(histId) {
-  const idx = history.findIndex(h => h.id === histId);
-  if (idx < 0) return;
-  const entry = history[idx];
-
-  // コイン減算
-  totalCoins = Math.max(0, totalCoins - entry.coin);
-  save('cw_totalCoins', totalCoins);
-  updateOverview();
-
-  // タスクを戻す
-  const tasks = entry.sourceList === 'weekList' ? weekTasks : dayTasks;
-  const restored = { ...entry.originalTask, done: false };
-  tasks.push(restored);
-  saveTaskList(tasks, entry.sourceList);
-
-  const progressId = entry.sourceList === 'weekList' ? 'weekProgress' : 'dayProgress';
-  renderTasks(tasks, entry.sourceList, progressId);
-
-  // 履歴から削除
-  history.splice(idx, 1);
-  save('cw_history', history);
-
-  playUndo();
-  renderHistory();
 }
 
 function renderHistory() {
@@ -848,120 +681,81 @@ function renderHistory() {
     list.innerHTML = '<div class="empty-msg">まだ記録がありません</div>';
     return;
   }
-  list.innerHTML = '';
-  history.slice(0, 30).forEach(h => {
-    const item = document.createElement('div');
-    item.className = 'history-item';
-
-    const check = document.createElement('button');
-    check.className = 'history-check';
-    check.title = 'クリックで取り消し';
-    check.addEventListener('click', () => undoHistory(h.id));
-
-    const lbl = document.createElement('span');
-    lbl.className = 'h-label ' + (h.label || 'work');
-    lbl.textContent = h.label === 'priv' ? 'プライベート' : '仕事';
-
-    const text = document.createElement('span');
-    text.className = 'h-text';
-    text.textContent = h.text;
-
-    const coin = document.createElement('span');
-    coin.className = 'h-coin';
-    coin.textContent = '+🪙' + h.coin;
-
-    const ts = document.createElement('span');
-    ts.className = 'h-ts';
-    ts.textContent = h.ts;
-
-    item.appendChild(check);
-    item.appendChild(lbl);
-    item.appendChild(text);
-    item.appendChild(coin);
-    item.appendChild(ts);
-    list.appendChild(item);
-  });
+  list.innerHTML = history.slice(0, 20).map(h =>
+    `<div class="history-item">
+      <span>${h.ts} ${h.text}</span>
+      <span class="h-coin">+🪙${h.coin}</span>
+    </div>`
+  ).join('');
 }
 
-function saveTaskList(tasks, listId) {
-  if (listId === 'weekList') save('cw_weekTasks', tasks);
-  else save('cw_dayTasks', tasks);
-}
-
-function addTask(tasks, inputId, labelId, coinId, listId, progressId) {
+function addTask(tasks, inputId, coinId, listId, progressId) {
   const input = document.getElementById(inputId);
-  const label = document.getElementById(labelId).value;
   const coin  = parseInt(document.getElementById(coinId).value);
   const text  = input.value.trim();
   if (!text) return;
-  tasks.push({ text, coin, label, done: false });
-  saveTaskList(tasks, listId);
+  tasks.push({ text, coin, done: false });
+  saveTasks(tasks, listId);
   renderTasks(tasks, listId, progressId);
   input.value = '';
   input.focus();
 }
 
+// ── タブ切り替え ────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.task-panel').forEach(p => p.classList.remove('visible'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('visible');
+  });
+});
+
 // ── イベント ────────────────────────────────────────────────
 document.getElementById('weekAdd').addEventListener('click', () =>
-  addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress'));
+  addTask(weekTasks, 'weekInput', 'weekCoin', 'weekList', 'weekProgress'));
 document.getElementById('weekInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress');
+  if (e.key === 'Enter') addTask(weekTasks, 'weekInput', 'weekCoin', 'weekList', 'weekProgress');
 });
 
 document.getElementById('dayAdd').addEventListener('click', () =>
-  addTask(dayTasks, 'dayInput', 'dayLabel', 'dayCoin', 'dayList', 'dayProgress'));
+  addTask(dayTasks, 'dayInput', 'dayCoin', 'dayList', 'dayProgress'));
 document.getElementById('dayInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addTask(dayTasks, 'dayInput', 'dayLabel', 'dayCoin', 'dayList', 'dayProgress');
+  if (e.key === 'Enter') addTask(dayTasks, 'dayInput', 'dayCoin', 'dayList', 'dayProgress');
 });
 
 document.getElementById('weekReset').addEventListener('click', () => {
-  if (!confirm('週タスクをリセットしますか？')) return;
+  if (!confirm('週タスクをリセットしますか？（完了済みタスクも消えます）')) return;
   weekTasks.length = 0;
-  save('cw_weekTasks', weekTasks);
+  save('weekTasks', weekTasks);
   renderTasks(weekTasks, 'weekList', 'weekProgress');
 });
 
 document.getElementById('dayReset').addEventListener('click', () => {
   if (!confirm('今日の予定をリセットしますか？')) return;
   dayTasks.length = 0;
-  save('cw_dayTasks', dayTasks);
+  save('dayTasks', dayTasks);
   renderTasks(dayTasks, 'dayList', 'dayProgress');
 });
 
-document.getElementById('limitInput').addEventListener('change', e => {
-  limitYen = Math.max(0, parseInt(e.target.value) || 0);
-  save('cw_limitYen', limitYen);
-  updateOverview();
+document.getElementById('resetBudgetBtn').addEventListener('click', () => {
+  if (!confirm('月リセット：コインと予算をリセットしますか？')) return;
+  coins = 0;
+  save('coins', coins);
+  updateCoinDisplay();
+  updateBudget();
 });
 
-// コイン消費モーダル
-document.getElementById('spendBtn').addEventListener('click', () => {
-  document.getElementById('spendAmount').value = '';
-  document.getElementById('spendMemo').value = '';
-  document.getElementById('spendModal').classList.add('open');
-});
-document.getElementById('spendCancel').addEventListener('click', () => {
-  document.getElementById('spendModal').classList.remove('open');
-});
-document.getElementById('spendOk').addEventListener('click', () => {
-  const amount = parseInt(document.getElementById('spendAmount').value);
-  if (!amount || amount <= 0) { alert('金額を入力してください'); return; }
-  const remain = limitYen - spentYen;
-  if (amount > remain) {
-    if (!confirm(`今月の残り使用可能額（¥${remain.toLocaleString()}）を超えています。続けますか？`)) return;
-  }
-  spentYen += amount;
-  save('cw_spentYen', spentYen);
-  updateOverview();
-  document.getElementById('spendModal').classList.remove('open');
-});
-document.getElementById('spendModal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+document.getElementById('rateInput').addEventListener('change', e => {
+  rate = Math.max(1, parseInt(e.target.value) || 10);
+  save('rate', rate);
+  updateBudget();
 });
 
 // ── 初期化 ──────────────────────────────────────────────────
-document.getElementById('limitInput').value = limitYen;
-updateOverview();
+document.getElementById('rateInput').value = rate;
+updateCoinDisplay();
+updateBudget();
 renderTasks(weekTasks, 'weekList', 'weekProgress');
 renderTasks(dayTasks, 'dayList', 'dayProgress');
 renderHistory();
