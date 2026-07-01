@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>コインワーク</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=DotGothic16&display=swap');
+
+:root {
+  --bg:       #0d1117;
+  --bg2:      #111827;
+  --panel:    #1a2332;
+  --border:   #1e3a4a;
+  --teal:     #2dd4bf;
+  --emerald:  #34d399;
+  --sky:      #38bdf8;
+  --violet:   #a78bfa;
+  --lime:     #a3e635;
+  --coin:     #fbbf24;
+  --text:     #e2e8f0;
+  --text-dim: #64748b;
+  --radius:   14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px 40px;
+  gap: 14px;
+}
+
+/* ── ヘッダー ── */
+header {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 4px;
+}
+
+.logo {
+  font-family: 'DotGothic16', monospace;
+  font-size: 1rem;
+  background: linear-gradient(90deg, var(--teal), var(--sky), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.12em;
+}
+
+/* ── コインバッジ ── */
+.coin-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1f2d1a;
+  border: 1.5px solid #3d5c1a;
+  border-radius: 99px;
+  padding: 6px 14px 6px 10px;
+  position: relative;
+  overflow: visible;
+}
+
+.coin-icon {
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 6px #fbbf2488);
+}
+
+.coin-count {
+  font-family: 'DotGothic16', monospace;
+  font-size: 1.1rem;
+  color: var(--coin);
+  min-width: 36px;
+  text-align: right;
+  transition: transform 0.15s;
+}
+
+.coin-count.bump { transform: scale(1.3); }
+
+/* ── 報酬予算バー ── */
+.budget-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.budget-label {
+  font-size: 0.72rem;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.budget-val {
+  font-family: 'DotGothic16', monospace;
+  font-size: 1rem;
+  color: var(--emerald);
+}
+
+.budget-bar-wrap {
+  height: 8px;
+  background: #ffffff0f;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.budget-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--emerald));
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.budget-sub {
+  font-size: 0.67rem;
+  color: var(--text-dim);
+}
+
+.budget-rate-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.budget-rate-label { font-size: 0.7rem; color: var(--text-dim); }
+
+.rate-input {
+  background: #ffffff0a;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  width: 72px;
+  outline: none;
+  text-align: center;
+}
+.rate-input:focus { border-color: var(--teal); }
+
+/* ── タブ ── */
+.tabs {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  gap: 6px;
+}
+
+.tab {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.8rem;
+  padding: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #0f2a2a, #1a1040);
+  border-color: var(--teal);
+  color: var(--teal);
+  font-weight: 700;
+}
+
+/* ── タスクパネル ── */
+.task-panel {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.task-panel.visible { display: flex; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-size: 0.72rem;
+  color: var(--sky);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.panel-progress {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-family: 'DotGothic16', monospace;
+}
+
+/* タスクリスト */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 20px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff06;
+  border: 1px solid #ffffff0e;
+  border-radius: 9px;
+  padding: 9px 10px;
+  transition: all 0.2s;
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.task-item.done {
+  background: #0d2a1a;
+  border-color: #1a4a2a;
+}
+
+.task-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+}
+.task-check:hover { border-color: var(--emerald); }
+.task-item.done .task-check {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+
+.task-text {
+  flex: 1;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  transition: all 0.2s;
+}
+.task-item.done .task-text {
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+
+.task-coin-badge {
+  font-size: 0.65rem;
+  color: var(--coin);
+  font-family: 'DotGothic16', monospace;
+  flex-shrink: 0;
+}
+
+.task-del {
+  background: none;
+  border: none;
+  color: #ffffff20;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 2px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.task-del:hover { color: #ff6b6b; }
+
+/* タスク追加フォーム */
+.add-row {
+  display: flex;
+  gap: 6px;
+}
+
+.task-input {
+  flex: 1;
+  background: #ffffff08;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  outline: none;
+}
+.task-input::placeholder { color: var(--text-dim); }
+.task-input:focus { border-color: var(--sky); }
+
+.coin-select {
+  background: #ffffff08;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--coin);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.8rem;
+  padding: 8px 6px;
+  outline: none;
+  width: 60px;
+  cursor: pointer;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, var(--teal), var(--sky));
+  border: none;
+  border-radius: 8px;
+  color: #0d1117;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.add-btn:hover { opacity: 0.85; }
+
+/* 今日の予定リセット */
+.reset-day-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed #ffffff15;
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.72rem;
+  padding: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reset-day-btn:hover { border-color: var(--sky); color: var(--sky); }
+
+/* ── コイン飛翔アニメ ── */
+.flying-coin {
+  position: fixed;
+  font-size: 1.4rem;
+  pointer-events: none;
+  z-index: 999;
+  animation: flyToBadge 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+
+@keyframes flyToBadge {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  60%  { opacity: 1; transform: scale(1.3) translateY(-30px); }
+  100% { opacity: 0; transform: scale(0.4) translateY(-80px); }
+}
+
+/* ── コイン履歴 ── */
+.history-section {
+  width: 100%;
+  max-width: 420px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.history-title {
+  font-size: 0.72rem;
+  color: var(--violet);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 4px 0;
+  border-bottom: 1px solid #ffffff06;
+}
+
+.history-item .h-coin { color: var(--coin); font-family: 'DotGothic16', monospace; }
+
+/* ── ボタン共通 ── */
+.btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 0.78rem;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover { border-color: var(--teal); color: var(--teal); }
+
+.empty-msg {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 12px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🪙 コインワーク</div>
+  <div class="coin-badge">
+    <span class="coin-icon">🪙</span>
+    <span class="coin-count" id="coinCount">0</span>
+  </div>
+</header>
+
+<!-- 報酬予算バー -->
+<div class="budget-card">
+  <div class="budget-header">
+    <span class="budget-label">💰 今月の報酬予算</span>
+    <span class="budget-val" id="budgetVal">¥0</span>
+  </div>
+  <div class="budget-bar-wrap">
+    <div class="budget-bar" id="budgetBar" style="width:0%"></div>
+  </div>
+  <div class="budget-sub" id="budgetSub">コインを貯めて報酬予算を獲得しよう</div>
+  <div class="budget-rate-row">
+    <span class="budget-rate-label">🪙1枚 =</span>
+    <input class="rate-input" type="number" id="rateInput" value="10" min="1"> 円
+    <button class="btn" id="resetBudgetBtn" style="margin-left:auto;font-size:0.68rem;padding:5px 10px;">月リセット</button>
+  </div>
+</div>
+
+<!-- タブ -->
+<div class="tabs">
+  <button class="tab active" data-tab="week">📋 週タスク</button>
+  <button class="tab" data-tab="day">⚡ 今日の予定</button>
+</div>
+
+<!-- 週タスクパネル -->
+<div class="task-panel visible" id="panel-week">
+  <div class="panel-header">
+    <span class="panel-title">今週やること</span>
+    <span class="panel-progress" id="weekProgress">0/0</span>
+  </div>
+  <div class="task-list" id="weekList"></div>
+  <div class="add-row">
+    <input class="task-input" id="weekInput" placeholder="タスクを追加…" type="text">
+    <select class="coin-select" id="weekCoin">
+      <option value="1">🪙1</option>
+      <option value="2">🪙2</option>
+      <option value="3" selected>🪙3</option>
+      <option value="5">🪙5</option>
+      <option value="10">🪙10</option>
+    </select>
+    <button class="add-btn" id="weekAdd">＋</button>
+  </div>
+  <button class="reset-day-btn" id="weekReset">週をリセット（新しい週を始める）</button>
+</div>
+
+<!-- 今日の予定パネル -->
+<div class="task-panel" id="panel-day">
+  <div class="panel-header">
+    <span class="panel-title">今日の予定</span>
+    <span class="panel-progress" id="dayProgress">0/0</span>
+  </div>
+  <div class="task-list" id="dayList"></div>
+  <div class="add-row">
+    <input class="task-input" id="dayInput" placeholder="今日やること…" type="text">
+    <select class="coin-select" id="dayCoin">
+      <option value="1" selected>🪙1</option>
+      <option value="2">🪙2</option>
+      <option value="3">🪙3</option>
+      <option value="5">🪙5</option>
+    </select>
+    <button class="add-btn" id="dayAdd">＋</button>
+  </div>
+  <button class="reset-day-btn" id="dayReset">今日の予定をリセット（翌日の準備）</button>
+</div>
+
+<!-- コイン履歴 -->
+<div class="history-section">
+  <div class="history-title">📜 獲得履歴</div>
+  <div class="history-list" id="historyList">
+    <div class="empty-msg">まだ記録がありません</div>
+  </div>
+</div>
+
+<script>
+// ── ストレージ ──────────────────────────────────────────────
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+// ── 状態 ────────────────────────────────────────────────────
+let coins    = load('coins', 0);
+let budget   = load('budget', 0);
+let rate     = load('rate', 10);
+let weekTasks = load('weekTasks', []);
+let dayTasks  = load('dayTasks', []);
+let history  = load('history', []);
+
+// ── 音 ──────────────────────────────────────────────────────
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playCoin() {
+  audioCtx.resume();
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(880, t);
+  osc.frequency.exponentialRampToValueAtTime(1320, t + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(1100, t + 0.18);
+  gain.gain.setValueAtTime(0.3, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+  osc.start(t);
+  osc.stop(t + 0.35);
+}
+
+function playBigCoin(n) {
+  audioCtx.resume();
+  for (let i = 0; i < Math.min(n, 5); i++) {
+    setTimeout(() => playCoin(), i * 80);
+  }
+}
+
+// ── コイン飛翔 ──────────────────────────────────────────────
+function spawnCoin(el) {
+  const rect = el.getBoundingClientRect();
+  const badge = document.getElementById('coinCount').getBoundingClientRect();
+  const coin = document.createElement('div');
+  coin.className = 'flying-coin';
+  coin.textContent = '🪙';
+  coin.style.left = rect.left + rect.width / 2 + 'px';
+  coin.style.top  = rect.top + 'px';
+  document.body.appendChild(coin);
+  setTimeout(() => coin.remove(), 800);
+
+  // バッジ揺れ
+  const cc = document.getElementById('coinCount');
+  cc.classList.add('bump');
+  setTimeout(() => cc.classList.remove('bump'), 200);
+}
+
+// ── UI更新 ──────────────────────────────────────────────────
+function updateCoinDisplay() {
+  document.getElementById('coinCount').textContent = coins;
+}
+
+function updateBudget() {
+  budget = coins * rate;
+  const maxBudget = 30000;
+  const pct = Math.min(budget / maxBudget * 100, 100);
+  document.getElementById('budgetBar').style.width = pct + '%';
+  document.getElementById('budgetVal').textContent = '¥' + budget.toLocaleString();
+  document.getElementById('budgetSub').textContent =
+    budget === 0 ? 'コインを貯めて報酬予算を獲得しよう'
+                 : `🎁 今月 ¥${budget.toLocaleString()} 分好きなものに使っていい！`;
+  save('budget', budget);
+}
+
+function renderTasks(tasks, listId, progressId) {
+  const list = document.getElementById(listId);
+  const prog = document.getElementById(progressId);
+  list.innerHTML = '';
+  if (tasks.length === 0) {
+    list.innerHTML = '<div class="empty-msg">タスクを追加してください</div>';
+    prog.textContent = '0/0';
+    return;
+  }
+  const done = tasks.filter(t => t.done).length;
+  prog.textContent = `${done}/${tasks.length}`;
+  tasks.forEach((task, i) => {
+    const item = document.createElement('div');
+    item.className = 'task-item' + (task.done ? ' done' : '');
+
+    const check = document.createElement('button');
+    check.className = 'task-check';
+    check.textContent = task.done ? '✓' : '';
+    check.addEventListener('click', () => toggleTask(tasks, i, listId, progressId, check));
+
+    const text = document.createElement('span');
+    text.className = 'task-text';
+    text.textContent = task.text;
+
+    const coinBadge = document.createElement('span');
+    coinBadge.className = 'task-coin-badge';
+    coinBadge.textContent = '🪙' + task.coin;
+
+    const del = document.createElement('button');
+    del.className = 'task-del';
+    del.textContent = '✕';
+    del.addEventListener('click', () => {
+      tasks.splice(i, 1);
+      saveTasks(tasks, listId);
+      renderTasks(tasks, listId, progressId);
+    });
+
+    item.appendChild(check);
+    item.appendChild(text);
+    item.appendChild(coinBadge);
+    item.appendChild(del);
+    list.appendChild(item);
+  });
+}
+
+function saveTasks(tasks, listId) {
+  if (listId === 'weekList') save('weekTasks', tasks);
+  else save('dayTasks', tasks);
+}
+
+function toggleTask(tasks, i, listId, progressId, checkEl) {
+  const task = tasks[i];
+  if (task.done) return; // 完了済みは戻せない
+
+  task.done = true;
+  saveTasks(tasks, listId);
+
+  // コイン追加
+  coins += task.coin;
+  save('coins', coins);
+  updateCoinDisplay();
+  updateBudget();
+
+  // 音＆アニメ
+  playBigCoin(task.coin);
+  spawnCoin(checkEl);
+
+  // 履歴追加
+  const now = new Date();
+  const ts = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  history.unshift({ text: task.text, coin: task.coin, ts });
+  if (history.length > 50) history.pop();
+  save('history', history);
+  renderHistory();
+
+  renderTasks(tasks, listId, progressId);
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (history.length === 0) {
+    list.innerHTML = '<div class="empty-msg">まだ記録がありません</div>';
+    return;
+  }
+  list.innerHTML = history.slice(0, 20).map(h =>
+    `<div class="history-item">
+      <span>${h.ts} ${h.text}</span>
+      <span class="h-coin">+🪙${h.coin}</span>
+    </div>`
+  ).join('');
+}
+
+function addTask(tasks, inputId, coinId, listId, progressId) {
+  const input = document.getElementById(inputId);
+  const coin  = parseInt(document.getElementById(coinId).value);
+  const text  = input.value.trim();
+  if (!text) return;
+  tasks.push({ text, coin, done: false });
+  saveTasks(tasks, listId);
+  renderTasks(tasks, listId, progressId);
+  input.value = '';
+  input.focus();
+}
+
+// ── タブ切り替え ────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.task-panel').forEach(p => p.classList.remove('visible'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('visible');
+  });
+});
+
+// ── イベント ────────────────────────────────────────────────
+document.getElementById('weekAdd').addEventListener('click', () =>
+  addTask(weekTasks, 'weekInput', 'weekCoin', 'weekList', 'weekProgress'));
+document.getElementById('weekInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTask(weekTasks, 'weekInput', 'weekCoin', 'weekList', 'weekProgress');
+});
+
+document.getElementById('dayAdd').addEventListener('click', () =>
+  addTask(dayTasks, 'dayInput', 'dayCoin', 'dayList', 'dayProgress'));
+document.getElementById('dayInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTask(dayTasks, 'dayInput', 'dayCoin', 'dayList', 'dayProgress');
+});
+
+document.getElementById('weekReset').addEventListener('click', () => {
+  if (!confirm('週タスクをリセットしますか？（完了済みタスクも消えます）')) return;
+  weekTasks.length = 0;
+  save('weekTasks', weekTasks);
+  renderTasks(weekTasks, 'weekList', 'weekProgress');
+});
+
+document.getElementById('dayReset').addEventListener('click', () => {
+  if (!confirm('今日の予定をリセットしますか？')) return;
+  dayTasks.length = 0;
+  save('dayTasks', dayTasks);
+  renderTasks(dayTasks, 'dayList', 'dayProgress');
+});
+
+document.getElementById('resetBudgetBtn').addEventListener('click', () => {
+  if (!confirm('月リセット：コインと予算をリセットしますか？')) return;
+  coins = 0;
+  save('coins', coins);
+  updateCoinDisplay();
+  updateBudget();
+});
+
+document.getElementById('rateInput').addEventListener('change', e => {
+  rate = Math.max(1, parseInt(e.target.value) || 10);
+  save('rate', rate);
+  updateBudget();
+});
+
+// ── 初期化 ──────────────────────────────────────────────────
+document.getElementById('rateInput').value = rate;
+updateCoinDisplay();
+updateBudget();
+renderTasks(weekTasks, 'weekList', 'weekProgress');
+renderTasks(dayTasks, 'dayList', 'dayProgress');
+renderHistory();
+</script>
+</body>
+</html>
