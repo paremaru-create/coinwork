@@ -1007,7 +1007,10 @@ function renderWishlist() {
   if (wishlist.length === 0) { list.innerHTML = '<div class="empty-msg">欲しいものを追加してください</div>'; return; }
   list.innerHTML = '';
   // 未購入→購入済みの順にソート
-  const sorted = [...wishlist].sort((a,b) => (a.bought ? 1 : 0) - (b.bought ? 1 : 0));
+  const sorted = [...wishlist].sort((a,b) => {
+    if (a.bought !== b.bought) return (a.bought ? 1 : 0) - (b.bought ? 1 : 0);
+    return b.price - a.price;
+  });
   sorted.forEach(item => {
     const neededCoins = Math.ceil(item.price / rate);
     const canAfford = remainCoins >= neededCoins;
