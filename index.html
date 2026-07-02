@@ -780,22 +780,40 @@ header {
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
+// ── Firebase（他端末とのデータ共有）────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyAet-gNOwGnZReHox-aKdrGhrqLQe5WKoo",
+  authDomain: "coin-work-f3dfe.firebaseapp.com",
+  databaseURL: "https://coin-work-f3dfe-default-rtdb.firebaseio.com",
+  projectId: "coin-work-f3dfe",
+  storageBucket: "coin-work-f3dfe.firebasestorage.app",
+  messagingSenderId: "2555148839",
+  appId: "1:2555148839:web:f8096421d2e4235f67ac02",
+  measurementId: "G-4VRXZ96E82"
+};
+firebase.initializeApp(firebaseConfig);
+const dbRef = firebase.database().ref('coinwork');
+
 function load(key, def) {
+  // Firebase読み込み前・オフライン時の一時的なフォールバックとしてのみ使用
   try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
 }
 function save(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  dbRef.child(key).set(val).catch(err => console.error('Firebase保存エラー:', err));
 }
 
-let totalCoins = load('cw_totalCoins', 0); // 稼いだ総枚数（減らない）
-let spentCoins = load('cw_spentCoins', 0); // 使った枚数
-let limitYen   = load('cw_limitYen', 30000);
-let rate       = load('cw_rate', 150);
-let weekTasks  = load('cw_weekTasks', []);
-let dayTasks   = load('cw_dayTasks', []);
-let history    = load('cw_history', []);
-let wishlist   = load('cw_wishlist', []);
+let totalCoins = 0; // 稼いだ総枚数（減らない）
+let spentCoins = 0; // 使った枚数
+let limitYen   = 30000;
+let rate       = 150;
+let weekTasks  = [];
+let dayTasks   = [];
+let history    = [];
+let wishlist   = [];
 
 // ── 音 ──────────────────────────────────────────────────────
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1188,14 +1206,40 @@ document.getElementById('spendModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
 });
 
-// ── 初期化 ───────────────────────────────────────────────────
-document.getElementById('rateInput').value = rate;
-document.getElementById('limitInput').value = limitYen;
-updateOverview();
-renderTasks(weekTasks, 'weekList', 'weekProgress');
-renderTasks(dayTasks, 'dayList', 'dayProgress');
-renderHistory();
-renderWishlist();
+// ── 初期化（Firebaseからデータを読み込んでから画面を作る）────────
+function renderAll() {
+  document.getElementById('rateInput').value = rate;
+  document.getElementById('limitInput').value = limitYen;
+  updateOverview();
+  renderTasks(weekTasks, 'weekList', 'weekProgress');
+  renderTasks(dayTasks, 'dayList', 'dayProgress');
+  renderHistory();
+  renderWishlist();
+}
+
+dbRef.once('value').then(snapshot => {
+  const data = snapshot.val() || {};
+  totalCoins = data.cw_totalCoins ?? load('cw_totalCoins', 0);
+  spentCoins = data.cw_spentCoins ?? load('cw_spentCoins', 0);
+  limitYen   = data.cw_limitYen   ?? load('cw_limitYen', 30000);
+  rate       = data.cw_rate       ?? load('cw_rate', 150);
+  weekTasks  = data.cw_weekTasks  ?? load('cw_weekTasks', []);
+  dayTasks   = data.cw_dayTasks   ?? load('cw_dayTasks', []);
+  history    = data.cw_history    ?? load('cw_history', []);
+  wishlist   = data.cw_wishlist   ?? load('cw_wishlist', []);
+  renderAll();
+}).catch(err => {
+  console.error('Firebase読み込みエラー、ローカルデータを表示します:', err);
+  totalCoins = load('cw_totalCoins', 0);
+  spentCoins = load('cw_spentCoins', 0);
+  limitYen   = load('cw_limitYen', 30000);
+  rate       = load('cw_rate', 150);
+  weekTasks  = load('cw_weekTasks', []);
+  dayTasks   = load('cw_dayTasks', []);
+  history    = load('cw_history', []);
+  wishlist   = load('cw_wishlist', []);
+  renderAll();
+});
 </script>
 </body>
 </html>
