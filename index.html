@@ -8,26 +8,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=DotGothic16&display=swap');
 
 :root {
-  --bg:      #f0f9ff;
-  --bg2:     #e0f2fe;
-  --panel:   #ffffff;
-  --border:  #bae6fd;
-  --teal:    #0d9488;
-  --emerald: #059669;
-  --sky:     #0284c7;
-  --violet:  #7c3aed;
-  --coin:    #d97706;
-  --red:     #dc2626;
-  --text:    #1e293b;
-  --dim:     #64748b;
-  --radius:  14px;
-  --shadow:  0 2px 12px #0000000d;
+  /* スクショ準拠パレット */
+  --sky:       #b7e6ee;   /* 空 */
+  --sky2:      #cdeef4;
+  --cloud:     #fbeef0;   /* 雲ピンク */
+  --sakura:    #f6b8cc;   /* 桜 */
+  --sakura2:   #fad3df;
+  --wood:      #6b4a33;   /* 濃い木 */
+  --wood2:     #9c7350;   /* 明るい木 */
+  --wood3:     #c9a276;   /* 床 */
+  --cream:     #fff6e8;   /* パネル地 */
+  --cream2:    #fdeeda;
+  --wallpink:  #f9dde3;   /* 室内壁 */
+  --leaf:      #7cae5a;   /* 葉っぱ緑 */
+  --coin:      #d99a2b;   /* コイン金 */
+  --coinlight: #ffe9b3;
+  --red:       #d9636b;
+  --text:      #4a3628;   /* 文字＝焦げ茶 */
+  --dim:       #a08872;
+  --pxborder:  3px solid var(--wood);
+  --pxshadow:  0 4px 0 #00000018;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { overflow-x: hidden; }
+
 body {
-  background: var(--bg);
+  overflow-x: hidden; /* 背後の桜のはみ出しで横スクロールさせない */
+  background:
+    /* 雲（下層・ハードエッジ） */
+    radial-gradient(circle at 12% 108%, var(--cloud) 0 18%, transparent 18.5%),
+    radial-gradient(circle at 30% 115%, #fdf3f4 0 22%, transparent 22.5%),
+    radial-gradient(circle at 55% 112%, var(--cloud) 0 20%, transparent 20.5%),
+    radial-gradient(circle at 78% 116%, #fdf3f4 0 24%, transparent 24.5%),
+    radial-gradient(circle at 96% 108%, var(--cloud) 0 17%, transparent 17.5%),
+    /* 浮き雲 */
+    radial-gradient(circle at 85% 18%, #ffffffaa 0 5%, transparent 5.5%),
+    radial-gradient(circle at 90% 21%, #ffffff88 0 4%, transparent 4.5%),
+    radial-gradient(circle at 10% 30%, #ffffff99 0 4.5%, transparent 5%),
+    radial-gradient(circle at 15% 33%, #ffffff77 0 3.5%, transparent 4%),
+    /* 空 */
+    linear-gradient(180deg, var(--sky) 0%, var(--sky2) 55%, #f2e4e6 100%);
+  background-attachment: fixed;
   color: var(--text);
   font-family: 'Zen Maru Gothic', sans-serif;
   min-height: 100vh;
@@ -45,31 +68,86 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: 4px 2px;
 }
 
 .logo {
   font-family: 'DotGothic16', monospace;
-  font-size: 1rem;
-  background: linear-gradient(90deg, var(--teal), var(--sky), var(--violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 0.12em;
+  font-size: 1.15rem;
+  color: var(--wood);
+  letter-spacing: 0.14em;
+  text-shadow: 2px 2px 0 #ffffffcc;
+}
+
+.sync-status {
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.68rem;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  background: #ffffffb8;
+  border: 2px solid var(--wood2);
+  padding: 3px 9px;
+}
+.sync-status.ok    #syncStatusText { color: var(--leaf); }
+.sync-status.err   #syncStatusText { color: var(--red); }
+.sync-status.busy  #syncStatusText { color: #5a9bb0; }
+
+/* ── 共通パネル：木枠の小屋風 ── */
+.coin-overview, .task-panel, .history-panel, .wishlist-panel, .modal {
+  background: var(--cream);
+  border: var(--pxborder);
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 2px #ffffff,
+    inset 0 0 0 4px var(--cream2),
+    var(--pxshadow);
+  image-rendering: pixelated;
 }
 
 /* ── コイン概要 ── */
 .coin-overview {
   width: 100%;
   max-width: 960px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px 18px;
+  padding: 16px 18px 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   align-items: flex-start;
+  position: relative;
+  margin-top: 34px; /* 背後の桜がはみ出すぶんの余白 */
+}
+/* もこもこ桜（パネル背後・左） */
+.coin-overview::before {
+  content: '';
+  position: absolute;
+  top: -52px; left: -46px;
+  width: 340px; height: 230px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 24% 30%, var(--sakura2) 0 40px, transparent 41px),
+    radial-gradient(circle at 46% 20%, var(--sakura)  0 48px, transparent 49px),
+    radial-gradient(circle at 70% 32%, var(--sakura2) 0 38px, transparent 39px),
+    radial-gradient(circle at 12% 52%, var(--sakura)  0 44px, transparent 45px),
+    radial-gradient(circle at 38% 48%, #ec9fbb 0 46px, transparent 47px),
+    radial-gradient(circle at 64% 55%, var(--sakura)  0 42px, transparent 43px),
+    radial-gradient(circle at 86% 50%, #ec9fbb 0 34px, transparent 35px);
+}
+/* もこもこ桜（パネル背後・右） */
+.coin-overview::after {
+  content: '';
+  position: absolute;
+  top: -44px; right: -40px;
+  width: 260px; height: 190px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 34% 24%, var(--sakura)  0 42px, transparent 43px),
+    radial-gradient(circle at 62% 32%, var(--sakura2) 0 36px, transparent 37px),
+    radial-gradient(circle at 18% 50%, #ec9fbb 0 34px, transparent 35px),
+    radial-gradient(circle at 48% 56%, var(--sakura)  0 40px, transparent 41px),
+    radial-gradient(circle at 78% 58%, #ec9fbb 0 32px, transparent 33px);
 }
 
 .coin-stat {
@@ -77,32 +155,42 @@ header {
   flex-direction: column;
   gap: 2px;
   min-width: 90px;
+  padding-top: 4px;
 }
 
 .stat-label {
   font-size: 0.62rem;
   color: var(--dim);
   letter-spacing: 0.07em;
+  font-weight: 700;
 }
 
 .stat-main {
   font-family: 'DotGothic16', monospace;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--coin);
+  text-shadow: 1px 1px 0 #ffffff;
 }
 .stat-sub {
   font-size: 0.75rem;
   color: var(--dim);
+  font-family: 'DotGothic16', monospace;
 }
 .stat-main.red, .stat-sub.red { color: var(--red); }
-.stat-main.green { color: var(--emerald); }
+.stat-main.green { color: var(--leaf); }
 
-.dv { width:1px; height:40px; background:var(--border); align-self:center; }
+.dv {
+  width: 3px; height: 42px;
+  background: repeating-linear-gradient(180deg,
+    var(--sakura2) 0 4px, transparent 4px 8px);
+  align-self: center;
+}
 
 .setting-group {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  padding-top: 4px;
 }
 .setting-inner {
   display: flex;
@@ -112,9 +200,9 @@ header {
   color: var(--dim);
 }
 .setting-input {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
+  border-radius: 0;
   color: var(--text);
   font-family: 'DotGothic16', monospace;
   font-size: 0.85rem;
@@ -123,40 +211,42 @@ header {
   outline: none;
   text-align: center;
 }
-.setting-input:focus { border-color: var(--sky); }
+.setting-input:focus { border-color: var(--sakura); background: #fff8fa; }
 
 .spend-btn {
   margin-left: auto;
   align-self: center;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--coin);
-  border-radius: 99px;
-  color: var(--coin);
-  font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 0.78rem;
+  background: var(--coinlight);
+  border: 2px solid var(--coin);
+  border-radius: 0;
+  color: #9c6a12;
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.8rem;
   font-weight: 700;
-  padding: 7px 18px;
+  padding: 8px 18px;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.2s;
+  box-shadow: 0 3px 0 var(--coin);
+  transition: transform 0.05s, box-shadow 0.05s;
 }
-.spend-btn:hover { opacity: 0.8; }
+.spend-btn:hover { filter: brightness(1.04); }
+.spend-btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--coin); }
 
 .budget-bar-wrap {
   width: 100%;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 99px;
+  height: 10px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
   overflow: hidden;
 }
 .budget-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--teal), var(--emerald));
-  border-radius: 99px;
+  background: repeating-linear-gradient(90deg,
+    var(--sakura) 0 8px, #f9a4bf 8px 16px);
   transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-/* ── メインタブ ── */
+/* ── メインタブ：木の看板風 ── */
 .main-tabs {
   width: 100%;
   max-width: 960px;
@@ -166,22 +256,27 @@ header {
 
 .main-tab {
   flex: 1;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--dim);
-  font-family: 'Zen Maru Gothic', sans-serif;
+  background: var(--wood3);
+  border: var(--pxborder);
+  border-radius: 0;
+  color: #fff8ec;
+  font-family: 'DotGothic16', monospace;
   font-size: 0.85rem;
   font-weight: 700;
-  padding: 10px;
+  padding: 11px 10px;
   cursor: pointer;
-  transition: all 0.2s;
   text-align: center;
+  box-shadow: 0 4px 0 var(--wood), inset 0 2px 0 #ffffff55;
+  text-shadow: 1px 1px 0 #00000033;
+  transition: transform 0.05s, box-shadow 0.05s, background 0.15s;
 }
+.main-tab:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--wood), inset 0 2px 0 #ffffff55; }
 .main-tab.active {
-  background: linear-gradient(135deg, #e0f9f5, #e0f2fe);
-  border-color: var(--teal);
-  color: var(--teal);
+  background: var(--sakura);
+  color: #7a3b52;
+  text-shadow: 1px 1px 0 #ffffff88;
+  box-shadow: 0 4px 0 #c4788f, inset 0 2px 0 #ffffff77;
+  border-color: #a05c73;
 }
 
 /* ── タブコンテンツ ── */
@@ -199,11 +294,7 @@ header {
 }
 
 .task-panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
+  padding: 16px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -214,19 +305,25 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 2px dashed var(--sakura2);
+  padding-bottom: 7px;
 }
 
 .panel-title {
-  font-size: 0.78rem;
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--sky);
+  color: var(--wood);
 }
 
 .panel-progress {
-  font-size: 0.7rem;
-  color: var(--dim);
+  font-size: 0.72rem;
+  color: #b76e88;
   font-family: 'DotGothic16', monospace;
+  background: var(--sakura2);
+  border: 2px solid var(--sakura);
+  padding: 1px 7px;
 }
 
 .task-list {
@@ -237,6 +334,7 @@ header {
 }
 
 .empty-msg {
+  font-family: 'DotGothic16', monospace;
   font-size: 0.73rem;
   color: var(--dim);
   text-align: center;
@@ -247,9 +345,8 @@ header {
   display: flex;
   align-items: center;
   gap: 7px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  background: #ffffff;
+  border: 2px solid var(--wood3);
   padding: 8px 9px;
   animation: slideIn 0.2s ease;
 }
@@ -260,31 +357,32 @@ header {
 
 .task-check {
   width: 20px; height: 20px;
-  border-radius: 50%;
-  border: 2px solid #cbd5e1;
-  background: none;
+  border-radius: 0;
+  border: 2px solid var(--wood2);
+  background: var(--cream);
   cursor: pointer;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 0.75rem;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
-.task-check:hover { border-color: var(--emerald); background: #f0fdf4; }
+.task-check:hover { border-color: var(--leaf); background: #eef7e4; }
 
 .task-label {
   font-size: 0.6rem;
   padding: 1px 6px;
-  border-radius: 99px;
+  border-radius: 0;
   font-weight: 700;
   flex-shrink: 0;
+  font-family: 'DotGothic16', monospace;
 }
-.task-label.work { background: #dbeafe; color: var(--sky); }
-.task-label.priv { background: #ede9fe; color: var(--violet); }
+.task-label.work { background: #d8ecf2; color: #4a7f92; border: 1px solid #a8cdd9; }
+.task-label.priv { background: var(--sakura2); color: #b05c78; border: 1px solid var(--sakura); }
 
 .task-text { flex: 1; font-size: 0.8rem; line-height: 1.4; }
 
 .task-coin-badge {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--coin);
   font-family: 'DotGothic16', monospace;
   flex-shrink: 0;
@@ -292,24 +390,24 @@ header {
 
 .task-del {
   background: none; border: none;
-  color: #cbd5e1; cursor: pointer;
+  color: #d9c3ad; cursor: pointer;
   font-size: 0.85rem; padding: 0 2px;
   transition: color 0.2s; flex-shrink: 0;
 }
-.task-del:hover { color: #ef4444; }
+.task-del:hover { color: var(--red); }
 
 .add-form {
   display: flex; flex-direction: column; gap: 6px;
-  border-top: 1px solid var(--border);
+  border-top: 2px dashed var(--sakura2);
   padding-top: 10px;
 }
 .add-row { display: flex; gap: 5px; }
 
 .task-input {
   flex: 1;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
+  border-radius: 0;
   color: var(--text);
   font-family: 'Zen Maru Gothic', sans-serif;
   font-size: 0.78rem;
@@ -317,58 +415,60 @@ header {
   outline: none;
 }
 .task-input::placeholder { color: var(--dim); }
-.task-input:focus { border-color: var(--sky); }
+.task-input:focus { border-color: var(--sakura); background: #fff8fa; }
 
 .add-options { display: flex; gap: 5px; align-items: center; }
 
 .label-select, .coin-select {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 7px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
+  border-radius: 0;
   color: var(--text);
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: 'DotGothic16', monospace;
   font-size: 0.75rem;
   padding: 5px 6px;
   outline: none; cursor: pointer;
 }
 
 .add-btn {
-  background: linear-gradient(135deg, var(--teal), var(--sky));
-  border: none; border-radius: 8px;
+  background: var(--leaf);
+  border: 2px solid #5c8a3f; border-radius: 0;
   color: #fff; font-weight: 700;
+  font-family: 'DotGothic16', monospace;
   font-size: 1rem; padding: 5px 13px;
-  cursor: pointer; transition: opacity 0.2s; flex-shrink: 0;
+  cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 3px 0 #5c8a3f;
+  transition: transform 0.05s, box-shadow 0.05s;
 }
-.add-btn:hover { opacity: 0.85; }
+.add-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #5c8a3f; }
 
 .reset-btn {
   background: none;
-  border: 1px dashed #cbd5e1;
-  border-radius: 7px;
+  border: 2px dashed var(--wood3);
+  border-radius: 0;
   color: var(--dim);
-  font-family: 'Zen Maru Gothic', sans-serif;
+  font-family: 'DotGothic16', monospace;
   font-size: 0.68rem;
-  padding: 5px; cursor: pointer;
+  padding: 6px; cursor: pointer;
   transition: all 0.2s; width: 100%;
 }
-.reset-btn:hover { border-color: var(--sky); color: var(--sky); }
+.reset-btn:hover { border-color: var(--sakura); color: #b05c78; background: #fff5f8; }
 
 /* 履歴 */
 .history-panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
+  padding: 16px 14px 14px;
   margin-top: 12px;
 }
 
 .history-title {
-  font-size: 0.72rem;
-  color: var(--violet);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.78rem;
+  color: var(--wood);
   font-weight: 700;
   letter-spacing: 0.08em;
   margin-bottom: 10px;
+  border-bottom: 2px dashed var(--sakura2);
+  padding-bottom: 7px;
 }
 
 .history-list {
@@ -379,44 +479,40 @@ header {
 .history-item {
   display: flex; align-items: center; gap: 7px;
   padding: 6px 8px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid var(--wood3);
   animation: slideIn 0.2s ease;
 }
 
 .history-check {
   width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--emerald);
-  border: none; cursor: pointer;
+  border-radius: 0;
+  background: var(--leaf);
+  border: 2px solid #5c8a3f; cursor: pointer;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; color: #fff;
-  transition: background 0.2s;
+  font-size: 0.68rem; color: #fff;
+  transition: background 0.2s, border-color 0.2s;
   position: relative;
 }
-.history-check:hover { background: var(--red); }
+.history-check:hover { background: var(--red); border-color: #a84850; }
 .history-check::after { content: '✓'; }
 .history-check:hover::after { content: '↩'; }
 
 .h-label {
   font-size: 0.6rem; padding: 1px 6px;
-  border-radius: 99px; font-weight: 700; flex-shrink: 0;
+  border-radius: 0; font-weight: 700; flex-shrink: 0;
+  font-family: 'DotGothic16', monospace;
 }
-.h-label.work { background: #dbeafe; color: var(--sky); }
-.h-label.priv { background: #ede9fe; color: var(--violet); }
+.h-label.work { background: #d8ecf2; color: #4a7f92; border: 1px solid #a8cdd9; }
+.h-label.priv { background: var(--sakura2); color: #b05c78; border: 1px solid var(--sakura); }
 .h-text { flex: 1; font-size: 0.78rem; }
 .h-coin { font-family: 'DotGothic16', monospace; font-size: 0.72rem; color: var(--coin); flex-shrink: 0; }
-.h-ts   { font-size: 0.65rem; color: var(--dim); flex-shrink: 0; }
+.h-ts   { font-size: 0.65rem; color: var(--dim); flex-shrink: 0; font-family: 'DotGothic16', monospace; }
 
 /* ── 欲しいものリスト ── */
 .wishlist-panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  padding: 18px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -432,9 +528,9 @@ header {
 }
 
 .wish-input {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
+  border-radius: 0;
   color: var(--text);
   font-family: 'Zen Maru Gothic', sans-serif;
   font-size: 0.8rem;
@@ -443,17 +539,21 @@ header {
   width: 100%;
 }
 .wish-input::placeholder { color: var(--dim); }
-.wish-input:focus { border-color: var(--violet); }
+.wish-input:focus { border-color: var(--sakura); background: #fff8fa; }
 
 .wish-add-btn {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, var(--violet), var(--sky));
-  border: none; border-radius: 8px;
-  color: #fff; font-weight: 700;
-  font-size: 0.85rem; padding: 9px;
-  cursor: pointer; transition: opacity 0.2s;
+  background: var(--sakura);
+  border: 2px solid #c4788f; border-radius: 0;
+  color: #7a3b52; font-weight: 700;
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.85rem; padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #c4788f;
+  text-shadow: 1px 1px 0 #ffffff66;
+  transition: transform 0.05s, box-shadow 0.05s;
 }
-.wish-add-btn:hover { opacity: 0.85; }
+.wish-add-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #c4788f; }
 
 .wish-list {
   display: flex;
@@ -462,9 +562,8 @@ header {
 }
 
 .wish-item {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: #ffffff;
+  border: 2px solid var(--wood3);
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -473,8 +572,9 @@ header {
   transition: border-color 0.2s;
 }
 .wish-item.affordable {
-  border-color: var(--emerald);
-  background: #f0fdf4;
+  border-color: var(--leaf);
+  background: #f4faee;
+  box-shadow: inset 0 0 0 1px #cfe5bd;
 }
 .wish-item.bought {
   opacity: 0.5;
@@ -506,13 +606,14 @@ header {
 .wish-coins-needed {
   font-size: 0.72rem;
   color: var(--dim);
+  font-family: 'DotGothic16', monospace;
 }
-.wish-coins-needed.ok { color: var(--emerald); font-weight: 700; }
+.wish-coins-needed.ok { color: var(--leaf); font-weight: 700; }
 .wish-coins-needed.ng { color: var(--red); }
 
 .wish-url {
   font-size: 0.68rem;
-  color: var(--sky);
+  color: #5a9bb0;
   text-decoration: none;
   word-break: break-all;
 }
@@ -521,26 +622,28 @@ header {
 .wish-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
 
 .wish-buy-btn {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--coin);
-  border-radius: 8px;
-  color: var(--coin);
-  font-family: 'Zen Maru Gothic', sans-serif;
+  background: var(--coinlight);
+  border: 2px solid var(--coin);
+  border-radius: 0;
+  color: #9c6a12;
+  font-family: 'DotGothic16', monospace;
   font-size: 0.72rem;
   font-weight: 700;
   padding: 5px 10px;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.2s;
+  box-shadow: 0 2px 0 var(--coin);
+  transition: transform 0.05s, box-shadow 0.05s;
 }
-.wish-buy-btn:hover { opacity: 0.8; }
+.wish-buy-btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--coin); }
 .wish-buy-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .wish-del-btn {
   background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 2px solid var(--cream2);
+  border-radius: 0;
   color: var(--dim);
+  font-family: 'DotGothic16', monospace;
   font-size: 0.72rem;
   padding: 5px 10px;
   cursor: pointer;
@@ -560,29 +663,49 @@ header {
   100% { opacity:0; transform:scale(0.3) translateY(-100px); }
 }
 
+/* ── 桜の花びら ── */
+.petal {
+  position: fixed;
+  top: -20px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 1;
+  animation: petalFall linear forwards;
+  opacity: 0.8;
+}
+@keyframes petalFall {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); }
+  100% { transform: translateY(110vh) translateX(60px) rotate(300deg); opacity: 0.4; }
+}
+
 /* ── モーダル ── */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
-  background: #00000044; z-index: 200;
+  background: #4a362866; z-index: 200;
   align-items: center; justify-content: center;
 }
 .modal-overlay.open { display: flex; }
 
 .modal {
-  background: var(--panel);
-  border-radius: var(--radius);
-  padding: 22px; width: 300px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 32px #00000022;
+  padding: 24px 22px 22px; width: 300px;
   display: flex; flex-direction: column; gap: 10px;
+  position: relative;
 }
-.modal h2 { font-size: 0.9rem; color: var(--coin); }
+.modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 7px;
+  background: repeating-linear-gradient(90deg,
+    var(--wood2) 0 12px, var(--wood) 12px 24px);
+}
+.modal h2 { font-family: 'DotGothic16', monospace; font-size: 0.95rem; color: var(--wood); padding-top: 4px; }
 .modal p  { font-size: 0.75rem; color: var(--dim); }
 
 .modal-input, .modal-memo {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid var(--wood2);
+  border-radius: 0;
   color: var(--text);
   font-family: 'Zen Maru Gothic', sans-serif;
   font-size: 0.85rem;
@@ -590,7 +713,7 @@ header {
   width: 100%; outline: none;
 }
 .modal-input { font-family: 'DotGothic16', monospace; text-align: center; }
-.modal-input:focus, .modal-memo:focus { border-color: var(--coin); }
+.modal-input:focus, .modal-memo:focus { border-color: var(--coin); background: #fffdf5; }
 
 .coin-preview {
   font-size: 0.78rem;
@@ -603,16 +726,19 @@ header {
 .modal-btns { display: flex; gap: 8px; }
 .modal-ok {
   flex: 1;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--coin); border-radius: 8px;
-  color: var(--coin); font-family: 'Zen Maru Gothic', sans-serif;
+  background: var(--coinlight);
+  border: 2px solid var(--coin); border-radius: 0;
+  color: #9c6a12; font-family: 'DotGothic16', monospace;
   font-weight: 700; font-size: 0.85rem; padding: 8px; cursor: pointer;
+  box-shadow: 0 3px 0 var(--coin);
+  transition: transform 0.05s, box-shadow 0.05s;
 }
+.modal-ok:active { transform: translateY(3px); box-shadow: 0 0 0 var(--coin); }
 .modal-cancel {
   flex: 1;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 8px; color: var(--dim);
-  font-family: 'Zen Maru Gothic', sans-serif;
+  background: var(--cream2); border: 2px solid var(--wood3);
+  border-radius: 0; color: var(--dim);
+  font-family: 'DotGothic16', monospace;
   font-size: 0.85rem; padding: 8px; cursor: pointer;
 }
 </style>
@@ -621,6 +747,7 @@ header {
 
 <header>
   <div class="logo">🪙 コインワーク</div>
+  <div class="sync-status" id="syncStatus" title="クラウド同期の状態">☁️ <span id="syncStatusText">未設定</span></div>
 </header>
 
 <!-- コイン概要 -->
@@ -780,40 +907,26 @@ header {
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-// ── Firebase（他端末とのデータ共有）────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyAet-gNOwGnZReHox-aKdrGhrqLQe5WKoo",
-  authDomain: "coin-work-f3dfe.firebaseapp.com",
-  databaseURL: "https://coin-work-f3dfe-default-rtdb.firebaseio.com",
-  projectId: "coin-work-f3dfe",
-  storageBucket: "coin-work-f3dfe.firebasestorage.app",
-  messagingSenderId: "2555148839",
-  appId: "1:2555148839:web:f8096421d2e4235f67ac02",
-  measurementId: "G-4VRXZ96E82"
-};
-firebase.initializeApp(firebaseConfig);
-const dbRef = firebase.database().ref('coinwork');
-
 function load(key, def) {
-  // Firebase読み込み前・オフライン時の一時的なフォールバックとしてのみ使用
   try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch { return def; }
 }
 function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
-  dbRef.child(key).set(val).catch(err => console.error('Firebase保存エラー:', err));
+  try {
+    localStorage.setItem(key, JSON.stringify(val));
+    localStorage.setItem('cw_updatedAt', String(Date.now()));
+  } catch {}
+  scheduleSync(); // クラウドへも保存（デバウンス付き）
 }
 
-let totalCoins = 0; // 稼いだ総枚数（減らない）
-let spentCoins = 0; // 使った枚数
-let limitYen   = 30000;
-let rate       = 150;
-let weekTasks  = [];
-let dayTasks   = [];
-let history    = [];
-let wishlist   = [];
+let totalCoins = load('cw_totalCoins', 0); // 稼いだ総枚数（減らない）
+let spentCoins = load('cw_spentCoins', 0); // 使った枚数
+let limitYen   = load('cw_limitYen', 30000);
+let rate       = load('cw_rate', 150);
+let weekTasks  = load('cw_weekTasks', []);
+let dayTasks   = load('cw_dayTasks', []);
+let history    = load('cw_history', []);
+let wishlist   = load('cw_wishlist', []);
 
 // ── 音 ──────────────────────────────────────────────────────
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1206,9 +1319,53 @@ document.getElementById('spendModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
 });
 
-// ── 初期化（Firebaseからデータを読み込んでから画面を作る）────────
+// ── クラウド同期（Google Apps Script）─────────────────────────
+// ★ ここにGASのWebアプリURLを貼る（空のままならlocalStorageのみで動作）
+const SYNC_URL = 'https://script.google.com/macros/s/AKfycby4UTn7QT8_ZGayIQxlFzQTxIhJkNcru8lJgZzhyi6UoUYSsVhXoO6lf4R5x-abTmqG/exec';
+
+let syncTimer = null;
+let syncBusy  = false;
+
+function setSyncStatus(cls, text) {
+  const el = document.getElementById('syncStatus');
+  el.className = 'sync-status' + (cls ? ' ' + cls : '');
+  document.getElementById('syncStatusText').textContent = text;
+}
+
+function snapshotState() {
+  return {
+    totalCoins, spentCoins, limitYen, rate,
+    weekTasks, dayTasks, history, wishlist,
+    updatedAt: Number(localStorage.getItem('cw_updatedAt')) || Date.now()
+  };
+}
+
+function applyState(s) {
+  totalCoins = s.totalCoins ?? 0;
+  spentCoins = s.spentCoins ?? 0;
+  limitYen   = s.limitYen   ?? 30000;
+  rate       = s.rate       ?? 150;
+  weekTasks.length = 0; weekTasks.push(...(s.weekTasks ?? []));
+  dayTasks.length  = 0; dayTasks.push(...(s.dayTasks ?? []));
+  history.length   = 0; history.push(...(s.history ?? []));
+  wishlist.length  = 0; wishlist.push(...(s.wishlist ?? []));
+  // localStorageにも反映（同期トリガーは不要なので直接書き込み）
+  try {
+    localStorage.setItem('cw_totalCoins', JSON.stringify(totalCoins));
+    localStorage.setItem('cw_spentCoins', JSON.stringify(spentCoins));
+    localStorage.setItem('cw_limitYen',   JSON.stringify(limitYen));
+    localStorage.setItem('cw_rate',       JSON.stringify(rate));
+    localStorage.setItem('cw_weekTasks',  JSON.stringify(weekTasks));
+    localStorage.setItem('cw_dayTasks',   JSON.stringify(dayTasks));
+    localStorage.setItem('cw_history',    JSON.stringify(history));
+    localStorage.setItem('cw_wishlist',   JSON.stringify(wishlist));
+    localStorage.setItem('cw_updatedAt',  String(s.updatedAt ?? Date.now()));
+  } catch {}
+  renderAll();
+}
+
 function renderAll() {
-  document.getElementById('rateInput').value = rate;
+  document.getElementById('rateInput').value  = rate;
   document.getElementById('limitInput').value = limitYen;
   updateOverview();
   renderTasks(weekTasks, 'weekList', 'weekProgress');
@@ -1217,29 +1374,65 @@ function renderAll() {
   renderWishlist();
 }
 
-dbRef.once('value').then(snapshot => {
-  const data = snapshot.val() || {};
-  totalCoins = data.cw_totalCoins ?? load('cw_totalCoins', 0);
-  spentCoins = data.cw_spentCoins ?? load('cw_spentCoins', 0);
-  limitYen   = data.cw_limitYen   ?? load('cw_limitYen', 30000);
-  rate       = data.cw_rate       ?? load('cw_rate', 150);
-  weekTasks  = data.cw_weekTasks  ?? load('cw_weekTasks', []);
-  dayTasks   = data.cw_dayTasks   ?? load('cw_dayTasks', []);
-  history    = data.cw_history    ?? load('cw_history', []);
-  wishlist   = data.cw_wishlist   ?? load('cw_wishlist', []);
-  renderAll();
-}).catch(err => {
-  console.error('Firebase読み込みエラー、ローカルデータを表示します:', err);
-  totalCoins = load('cw_totalCoins', 0);
-  spentCoins = load('cw_spentCoins', 0);
-  limitYen   = load('cw_limitYen', 30000);
-  rate       = load('cw_rate', 150);
-  weekTasks  = load('cw_weekTasks', []);
-  dayTasks   = load('cw_dayTasks', []);
-  history    = load('cw_history', []);
-  wishlist   = load('cw_wishlist', []);
-  renderAll();
-});
+function scheduleSync() {
+  if (!SYNC_URL) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncPush, 1500); // 連続操作をまとめて1回で送信
+}
+
+async function syncPush() {
+  if (!SYNC_URL || syncBusy) { if (syncBusy) scheduleSync(); return; }
+  syncBusy = true;
+  setSyncStatus('busy', '保存中…');
+  try {
+    // Content-Typeを付けない＝text/plain扱いになりCORSプリフライトを回避（GAS仕様）
+    const res = await fetch(SYNC_URL, { method: 'POST', body: JSON.stringify(snapshotState()) });
+    const json = await res.json();
+    if (json.ok) setSyncStatus('ok', '同期済み');
+    else throw new Error(json.error || 'unknown');
+  } catch (e) {
+    setSyncStatus('err', '同期失敗');
+  } finally {
+    syncBusy = false;
+  }
+}
+
+async function syncPull() {
+  if (!SYNC_URL) { setSyncStatus('', 'ローカルのみ'); return; }
+  setSyncStatus('busy', '読込中…');
+  try {
+    const res = await fetch(SYNC_URL);
+    const json = await res.json();
+    const localAt = Number(localStorage.getItem('cw_updatedAt')) || 0;
+    if (json.ok && json.data && (json.data.updatedAt || 0) > localAt) {
+      applyState(json.data); // クラウドの方が新しい → 上書き
+    } else if (localAt > (json.data?.updatedAt || 0)) {
+      syncPush(); // ローカルの方が新しい → クラウドへ送信
+      return;
+    }
+    setSyncStatus('ok', '同期済み');
+  } catch (e) {
+    setSyncStatus('err', 'オフライン');
+  }
+}
+
+// ── 初期化 ───────────────────────────────────────────────────
+renderAll();   // まずローカルデータで即表示
+syncPull();    // クラウドに新しいデータがあれば置き換え
+
+// ── 桜の花びら演出 ──
+function spawnPetal() {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.textContent = '🌸';
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.fontSize = (0.55 + Math.random() * 0.5) + 'rem';
+  p.style.animationDuration = (7 + Math.random() * 6) + 's';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 14000);
+}
+setInterval(spawnPetal, 2600);
+spawnPetal();
 </script>
 </body>
 </html>
