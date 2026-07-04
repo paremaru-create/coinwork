@@ -419,7 +419,9 @@ header {
   font-family: 'DotGothic16', monospace;
   flex-shrink: 0;
   white-space: nowrap;
+  cursor: pointer;
 }
+.task-early-badge:hover { background: #d3f0e4; }
 
 .early-bonus-toggle {
   display: flex; align-items: center; gap: 4px;
@@ -1119,9 +1121,16 @@ function renderTasks(tasks, listId, progressId) {
     item.appendChild(check); item.appendChild(lbl); item.appendChild(text);
 
     if (task.earlyBonus) {
-      const early = document.createElement('span');
+      const early = document.createElement('button');
       early.className = 'task-early-badge';
       early.textContent = '🌟早特';
+      early.title = 'タップで早特を解除';
+      early.addEventListener('click', () => {
+        if (!confirm('この「早特」バッジを解除しますか？（達成してもボーナスは付かなくなります）')) return;
+        task.earlyBonus = false;
+        saveTaskList(tasks, listId);
+        renderTasks(tasks, listId, progressId);
+      });
       item.appendChild(early);
     }
     if (task.carryCount) {
@@ -1399,7 +1408,8 @@ document.getElementById('weekReset').addEventListener('click', () => {
 
   // 未消化タスクだけ持ち越す（持ち越し回数+1、早特チャンスはリセット）
   const carried = weekTasks.filter(t => !t.done).map(t => ({
-    ...t, carryCount: (t.carryCount || 0) + 1, earlyBonus: false
+    ...t, carryCount: (t.carryCount || 0) + 1
+    // 早特は自動では外さない（タスクによって「今週だけ」「気長に進めたい」があるため、外すかは本人が判断）
   }));
   weekTasks.length = 0;
   weekTasks.push(...carried);
