@@ -399,6 +399,38 @@ header {
   flex-shrink: 0;
 }
 
+.task-carry-badge {
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  color: #8a6a2f;
+  background: #fdf0d5;
+  border: 1px solid var(--coin);
+  font-family: 'DotGothic16', monospace;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.task-early-badge {
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  color: #2f6b57;
+  background: #e4f7ee;
+  border: 1px solid var(--mint2);
+  font-family: 'DotGothic16', monospace;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.early-bonus-toggle {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.68rem;
+  color: var(--dim);
+  font-family: 'DotGothic16', monospace;
+  cursor: pointer;
+  user-select: none;
+}
+.early-bonus-toggle input { cursor: pointer; }
+
 .task-del {
   background: none; border: none;
   color: #d9c3ad; cursor: pointer;
@@ -464,6 +496,32 @@ header {
   transition: all 0.2s; width: 100%;
 }
 .reset-btn:hover { border-color: var(--sakura); color: #b05c78; background: #fff5f8; }
+
+.summary-toggle {
+  background: none;
+  border: none;
+  color: var(--mint2);
+  font-family: 'DotGothic16', monospace;
+  font-size: 0.68rem;
+  padding: 4px; cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
+}
+.summary-list {
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 160px; overflow-y: auto;
+  padding: 6px 2px 2px;
+}
+.summary-item {
+  display: flex; justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text);
+  background: #fdf7ee;
+  border: 1px solid var(--wood3);
+  padding: 4px 8px;
+  font-family: 'DotGothic16', monospace;
+}
+.summary-item .s-rate { font-weight: 700; color: var(--mint2); }
 
 /* 履歴 */
 .history-panel {
@@ -846,8 +904,11 @@ header {
             <option value="5">🪙5</option>
             <option value="10">🪙10</option>
           </select>
+          <label class="early-bonus-toggle"><input type="checkbox" id="weekEarlyBonus">🌟早特</label>
         </div>
         <button class="reset-btn" id="weekReset">週をリセット</button>
+        <button class="summary-toggle" id="summaryToggle">📊 週の記録を見る</button>
+        <div class="summary-list" id="summaryList" style="display:none"></div>
       </div>
     </div>
 
@@ -931,13 +992,23 @@ function save(key, val) {
 }
 
 let totalCoins = load('cw_totalCoins', 0); // 稼いだ総枚数（減らない）
-let spentCoins = load('cw_spentCoins', 0); // 使った枚数
+let spentCoins = load('cw_spentCoins', 0); // 使った枚数（全期間の合計。残り使用可能の計算に使う）
 let limitYen   = load('cw_limitYen', 30000);
 let rate       = load('cw_rate', 150);
 let weekTasks  = load('cw_weekTasks', []);
 let dayTasks   = load('cw_dayTasks', []);
 let history    = load('cw_history', []);
 let wishlist   = load('cw_wishlist', []);
+let weekSummaries = load('cw_weekSummaries', []); // 週リセット時の消化率記録
+let spendLog   = load('cw_spendLog', []); // いつ・いくら使ったか（月ごとの集計に使う）
+
+function todayISO_(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getMonthSpentCoins() {
+  const ym = todayISO_().slice(0, 7); // 'YYYY-MM'
+  return spendLog.filter(e => e.dateISO.slice(0, 7) === ym).reduce((sum, e) => sum + e.coin, 0);
+}
 
 // ── 音 ──────────────────────────────────────────────────────
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -992,17 +1063,18 @@ function spawnCoins(el, n) {
 
 // ── 概要更新 ─────────────────────────────────────────────────
 function updateOverview() {
-  const totalYen   = totalCoins * rate;
-  const spentYen   = spentCoins * rate;
-  const limitCoins = Math.floor(limitYen / rate);
-  const remainCoins = totalCoins - spentCoins;
-  const remainYen   = remainCoins * rate;
-  const pct = limitCoins > 0 ? Math.min(spentCoins / limitCoins * 100, 100) : 0;
+  const totalYen    = totalCoins * rate;
+  const monthSpent  = getMonthSpentCoins(); // 今月分だけ（日付で自動判定）
+  const monthSpentYen = monthSpent * rate;
+  const limitCoins  = Math.floor(limitYen / rate);
+  const remainCoins = totalCoins - spentCoins; // 全期間の残り（ウォレット残高）
+  const remainYen    = remainCoins * rate;
+  const pct = limitCoins > 0 ? Math.min(monthSpent / limitCoins * 100, 100) : 0;
 
   document.getElementById('totalCoinsDisp').textContent = totalCoins + '枚';
   document.getElementById('totalYenDisp').textContent   = '¥' + totalYen.toLocaleString();
-  document.getElementById('spentCoinsDisp').textContent = spentCoins + '枚';
-  document.getElementById('spentYenDisp').textContent   = '¥' + spentYen.toLocaleString();
+  document.getElementById('spentCoinsDisp').textContent = monthSpent + '枚';
+  document.getElementById('spentYenDisp').textContent   = '¥' + monthSpentYen.toLocaleString();
 
   const remainEl    = document.getElementById('remainCoinsDisp');
   const remainYenEl = document.getElementById('remainYenDisp');
@@ -1044,9 +1116,25 @@ function renderTasks(tasks, listId, progressId) {
     text.className = 'task-text';
     text.textContent = task.text;
 
+    item.appendChild(check); item.appendChild(lbl); item.appendChild(text);
+
+    if (task.earlyBonus) {
+      const early = document.createElement('span');
+      early.className = 'task-early-badge';
+      early.textContent = '🌟早特';
+      item.appendChild(early);
+    }
+    if (task.carryCount) {
+      const carry = document.createElement('span');
+      carry.className = 'task-carry-badge';
+      carry.textContent = `⏳持ち越し${task.carryCount}回目`;
+      item.appendChild(carry);
+    }
+
     const badge = document.createElement('span');
     badge.className = 'task-coin-badge';
     badge.textContent = '🪙' + task.coin;
+    item.appendChild(badge);
 
     const del = document.createElement('button');
     del.className = 'task-del';
@@ -1056,9 +1144,8 @@ function renderTasks(tasks, listId, progressId) {
       saveTaskList(tasks, listId);
       renderTasks(tasks, listId, progressId);
     });
+    item.appendChild(del);
 
-    item.appendChild(check); item.appendChild(lbl);
-    item.appendChild(text); item.appendChild(badge); item.appendChild(del);
     list.appendChild(item);
   });
 }
@@ -1068,15 +1155,20 @@ function completeTask(tasks, idx, listId, progressId, checkEl) {
   task.done = true;
   saveTaskList(tasks, listId);
 
-  totalCoins += task.coin;
+  const bonus = task.earlyBonus ? 1 : 0;
+  totalCoins += task.coin + bonus;
   save('cw_totalCoins', totalCoins);
   updateOverview();
-  playCoin(task.coin);
-  spawnCoins(checkEl, task.coin);
+  playCoin(task.coin + bonus);
+  spawnCoins(checkEl, task.coin + bonus);
 
   const now = new Date();
   const ts = `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  history.unshift({ id: Date.now(), text: task.text, coin: task.coin, label: task.label||'work', ts, sourceList: listId, originalTask: {...task} });
+  history.unshift({
+    id: Date.now(), text: task.text, coin: task.coin + bonus, label: task.label||'work', ts,
+    sourceList: listId, originalTask: {...task},
+    earlyBonus: !!task.earlyBonus
+  });
   if (history.length > 60) history.pop();
   save('cw_history', history);
 
@@ -1117,7 +1209,7 @@ function renderHistory() {
     lbl.className = 'h-label ' + (h.label||'work');
     lbl.textContent = h.label === 'priv' ? 'プライベート' : '仕事';
     const text = document.createElement('span');
-    text.className = 'h-text'; text.textContent = h.text;
+    text.className = 'h-text'; text.textContent = (h.earlyBonus ? '🌟 ' : '') + h.text;
     const coin = document.createElement('span');
     coin.className = 'h-coin'; coin.textContent = '+🪙' + h.coin;
     const ts = document.createElement('span');
@@ -1132,14 +1224,20 @@ function saveTaskList(tasks, listId) {
   save(listId === 'weekList' ? 'cw_weekTasks' : 'cw_dayTasks', tasks);
 }
 
-function addTask(tasks, inputId, labelId, coinId, listId, progressId) {
+function addTask(tasks, inputId, labelId, coinId, listId, progressId, earlyBonusId) {
   const input = document.getElementById(inputId);
   const text  = input.value.trim();
   if (!text) return;
-  tasks.push({ text, coin: parseInt(document.getElementById(coinId).value), label: document.getElementById(labelId).value, done: false });
+  const earlyBonus = earlyBonusId ? document.getElementById(earlyBonusId).checked : false;
+  tasks.push({
+    text, coin: parseInt(document.getElementById(coinId).value),
+    label: document.getElementById(labelId).value, done: false,
+    earlyBonus, carryCount: 0
+  });
   saveTaskList(tasks, listId);
   renderTasks(tasks, listId, progressId);
   input.value = ''; input.focus();
+  if (earlyBonusId) document.getElementById(earlyBonusId).checked = false;
 }
 
 // ── 欲しいものリスト ─────────────────────────────────────────
@@ -1234,6 +1332,11 @@ function buyWish(id, coinsToSpend, btn) {
   const item = wishlist.find(w => w.id === id);
   if (item) item.bought = true;
   save('cw_wishlist', wishlist);
+
+  const now = new Date();
+  spendLog.push({ id: Date.now(), coin: coinsToSpend, yen: coinsToSpend * rate, memo: item ? item.name : '', dateISO: todayISO_(now) });
+  save('cw_spendLog', spendLog);
+
   updateOverview();
   playCoin(Math.min(coinsToSpend, 5));
   spawnCoins(btn, Math.min(coinsToSpend, 5));
@@ -1263,9 +1366,9 @@ document.querySelectorAll('.main-tab').forEach(tab => {
 });
 
 document.getElementById('weekAdd').addEventListener('click', () =>
-  addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress'));
+  addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress', 'weekEarlyBonus'));
 document.getElementById('weekInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress');
+  if (e.key === 'Enter') addTask(weekTasks, 'weekInput', 'weekLabel', 'weekCoin', 'weekList', 'weekProgress', 'weekEarlyBonus');
 });
 document.getElementById('dayAdd').addEventListener('click', () =>
   addTask(dayTasks, 'dayInput', 'dayLabel', 'dayCoin', 'dayList', 'dayProgress'));
@@ -1274,10 +1377,58 @@ document.getElementById('dayInput').addEventListener('keydown', e => {
 });
 
 document.getElementById('weekReset').addEventListener('click', () => {
-  if (!confirm('週タスクをリセットしますか？')) return;
-  weekTasks.length = 0; save('cw_weekTasks', weekTasks);
+  const total = weekTasks.length;
+  const doneCount = weekTasks.filter(t => t.done).length;
+  const remaining = total - doneCount;
+  const rate = total > 0 ? Math.round(doneCount / total * 100) : null;
+
+  const msg = remaining > 0
+    ? `週タスクをリセットしますか？\n（完了済みは消えますが、未消化の${remaining}件は来週に持ち越されます）`
+    : '週タスクをリセットしますか？';
+  if (!confirm(msg)) return;
+
+  // 今週のサマリーを記録（消化率が計算できるときだけ）
+  if (rate !== null) {
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}`;
+    weekSummaries.unshift({ date: dateStr, rate, done: doneCount, total });
+    if (weekSummaries.length > 104) weekSummaries.pop(); // 約2年分
+    save('cw_weekSummaries', weekSummaries);
+    renderSummaries();
+  }
+
+  // 未消化タスクだけ持ち越す（持ち越し回数+1、早特チャンスはリセット）
+  const carried = weekTasks.filter(t => !t.done).map(t => ({
+    ...t, carryCount: (t.carryCount || 0) + 1, earlyBonus: false
+  }));
+  weekTasks.length = 0;
+  weekTasks.push(...carried);
+  save('cw_weekTasks', weekTasks);
   renderTasks(weekTasks, 'weekList', 'weekProgress');
 });
+
+document.getElementById('summaryToggle').addEventListener('click', () => {
+  const list = document.getElementById('summaryList');
+  const showing = list.style.display !== 'none';
+  list.style.display = showing ? 'none' : 'block';
+  document.getElementById('summaryToggle').textContent = showing ? '📊 週の記録を見る' : '📊 週の記録を閉じる';
+  if (!showing) renderSummaries();
+});
+
+function renderSummaries() {
+  const list = document.getElementById('summaryList');
+  if (weekSummaries.length === 0) {
+    list.innerHTML = '<div class="empty-msg">まだ記録がありません</div>';
+    return;
+  }
+  list.innerHTML = '';
+  weekSummaries.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'summary-item';
+    item.innerHTML = `<span>${s.date}週</span><span class="s-rate">${s.rate}%（${s.done}/${s.total}）</span>`;
+    list.appendChild(item);
+  });
+}
 document.getElementById('dayReset').addEventListener('click', () => {
   if (!confirm('今日の予定をリセットしますか？')) return;
   dayTasks.length = 0; save('cw_dayTasks', dayTasks);
@@ -1323,6 +1474,11 @@ document.getElementById('spendOk').addEventListener('click', () => {
   }
   spentCoins += coinsToSpend;
   save('cw_spentCoins', spentCoins);
+
+  const memo = document.getElementById('spendMemo').value.trim();
+  spendLog.push({ id: Date.now(), coin: coinsToSpend, yen: amount, memo, dateISO: todayISO_() });
+  save('cw_spendLog', spendLog);
+
   updateOverview();
   document.getElementById('spendModal').classList.remove('open');
 });
@@ -1346,7 +1502,7 @@ function setSyncStatus(cls, text) {
 function snapshotState() {
   return {
     totalCoins, spentCoins, limitYen, rate,
-    weekTasks, dayTasks, history, wishlist,
+    weekTasks, dayTasks, history, wishlist, weekSummaries, spendLog,
     updatedAt: Number(localStorage.getItem('cw_updatedAt')) || Date.now()
   };
 }
@@ -1360,6 +1516,8 @@ function applyState(s) {
   dayTasks.length  = 0; dayTasks.push(...(s.dayTasks ?? []));
   history.length   = 0; history.push(...(s.history ?? []));
   wishlist.length  = 0; wishlist.push(...(s.wishlist ?? []));
+  weekSummaries.length = 0; weekSummaries.push(...(s.weekSummaries ?? []));
+  spendLog.length = 0; spendLog.push(...(s.spendLog ?? []));
   // localStorageにも反映（同期トリガーは不要なので直接書き込み）
   try {
     localStorage.setItem('cw_totalCoins', JSON.stringify(totalCoins));
@@ -1370,6 +1528,8 @@ function applyState(s) {
     localStorage.setItem('cw_dayTasks',   JSON.stringify(dayTasks));
     localStorage.setItem('cw_history',    JSON.stringify(history));
     localStorage.setItem('cw_wishlist',   JSON.stringify(wishlist));
+    localStorage.setItem('cw_weekSummaries', JSON.stringify(weekSummaries));
+    localStorage.setItem('cw_spendLog', JSON.stringify(spendLog));
     localStorage.setItem('cw_updatedAt',  String(s.updatedAt ?? Date.now()));
   } catch {}
   renderAll();
@@ -1383,6 +1543,7 @@ function renderAll() {
   renderTasks(dayTasks, 'dayList', 'dayProgress');
   renderHistory();
   renderWishlist();
+  renderSummaries();
 }
 
 function scheduleSync() {
