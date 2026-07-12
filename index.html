@@ -614,6 +614,7 @@ function renderCategoryCard(cat, md, key){
       <div>
         <div class="cat-amt mono ${over?'neg':''}" id="cat-amt-${cat.id}">${yen(spent)}</div>
         <div class="cat-amt-sub mono">/ ${yen(budget)}</div>
+        <div class="cat-amt-sub mono ${over?'neg':''}" id="cat-remain-${cat.id}" style="margin-top:2px;">残り ${yen(budget-spent)}</div>
       </div>
       <span class="chev ${open?'open':''}">⌄</span>
     </button>
@@ -814,6 +815,8 @@ function setBudget(catId, value){
   if(bar){ bar.style.width = pct+"%"; bar.style.background = over? "#D1495B" : cat.color; }
   const amtEl = document.getElementById(`cat-amt-${catId}`);
   if(amtEl){ amtEl.classList.toggle("neg", over); }
+  const remainEl = document.getElementById(`cat-remain-${catId}`);
+  if(remainEl){ remainEl.textContent = `残り ${yen(budget-spent)}`; remainEl.classList.toggle("neg", over); }
 }
 
 function setBankBalance(value){
